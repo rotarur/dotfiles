@@ -23,10 +23,6 @@ sudo apt -y install nodejs npm yarn \
    docker.io docker-compose packer \
    ansible neovim fzf silversearcher-ag \
    apt-transport-https curl whois \
-   terminator zsh
+   terminator zsh containerd
 
 sudo usermod -aG docker rotarur
-
-echo "install serverless"
-npm install -g aws-sam-local
-npm install -g serverless
