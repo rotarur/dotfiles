@@ -19,4 +19,4 @@ cp init.vim $nvimfoler/
 echo "Installing fonts-firecode"
 sudo apt -y install fonts-firacode
 
-sudo apt -y nodejs npm yarn
+sudo apt -y install nodejs npm yarn
