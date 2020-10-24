@@ -1,0 +1,6 @@
+- `init.vim` example - https://gist.github.com/synasius/5cdc75c1c8171732c817
+
+## VIM Coc pluggin
+```
+:CocInstall coc-json coc-tsserver coc-pairs coc-yaml
+```
