@@ -340,7 +340,7 @@ endfunction
 nnoremap <silent> ,C :call CleanNoNameEmptyBuffers()<CR>
 
 " Xuyuanp/nerdtree-git-plugin {{{
-let g:NERDTreeShowIgnoredStatus = 1
+let g:NERDTreeGitStatusShowIgnored = 1
 
 " cmap git Git
 " }}} Xuyuanp/nerdtree-git-plugin
