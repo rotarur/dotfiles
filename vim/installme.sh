@@ -84,3 +84,6 @@ echo 'eval "$(rbenv init -)"' >> ~/.zshrc
 
 tfenv install 0.12.20
 tfenv use 0.12.20
+
+goenv install 1.15.3
+goenv global 1.15.3
