@@ -1,0 +1,28 @@
+- `init.vim` example - https://gist.github.com/synasius/5cdc75c1c8171732c817
+
+## VIM Coc pluggin
+```
+:CocInstall coc-json coc-tsserver coc-pairs coc-yaml
+```
+
+https://gist.github.com/synasius/5cdc75c1c8171732c817
+
+## Fonts
+https://github.com/ryanoasis/nerd-fonts
+https://github.com/tiagofumo/vim-nerdtree-syntax-highlight
+
+# K9S
+https://github.com/derailed/k9s
+
+# Notion for Linux
+https://github.com/davidbailey00/notion-deb-builder
+
+# Bitwarden
+https://bitwarden.com/
+
+https://github.com/nicknisi/dotfiles
+
+https://github.com/aristocratos/bpytop
+
+https://github.com/vim-syntastic/syntastic
+https://github.com/kien/ctrlp.vim

@@ -108,6 +108,7 @@ set spellfile=~/.config/nvim/en.utf-8.add
 
 autocmd FileType yaml setlocal shiftwidth=2 softtabstop=2 expandtab
 autocmd FileType tf setlocal shiftwidth=2 softtabstop=2 expandtab
+autocmd FileType json setlocal shiftwidth=3 softtabstop=3 expandtab
 
 " Use ctrl-[hjkl] to select the active split!
 nmap <silent> <c-k> :wincmd k<CR>
@@ -117,6 +118,7 @@ nmap <silent> <c-l> :wincmd l<CR>
 
 " disable highlight
 nmap <leader>n :noh<cr>
+
 " Uncomment the following to have Vim jump to the last position when
 " reopening a file
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
@@ -202,8 +204,8 @@ let g:mkdp_refresh_slow = 0
 let g:mkdp_command_for_global = 0
 
 " specify browser to open preview page
-" default: ''
-let g:mkdp_browser = 'firefox'
+" default: 'Google Chrome'
+" let g:mkdp_browser = 'Google Chrome'
 
 let g:mkdp_preview_options = {
     \ 'mkit': {},
@@ -261,7 +263,7 @@ let NERDTreeDirArrows = 1
 
 let NERDTreeAutoDeleteBuffer = 1
 
-ret NERDTreeShowHidden=1
+let NERDTreeShowHidden=1
 let NERDTreeIgnore = ['\.pyc$', '__pycache__']
 
 let g:nerdtree_tabs_open_on_gui_startup = 0
@@ -303,6 +305,13 @@ call NERDTreeHighlightFile('css', 'cyan', 'none', 'cyan', '#151515')
 call NERDTreeHighlightFile('coffee', 'Red', 'none', 'red', '#151515')
 call NERDTreeHighlightFile('js', 'Red', 'none', '#ffa500', '#151515')
 call NERDTreeHighlightFile('php', 'Magenta', 'none', '#ff00ff', '#151515')
+call NERDTreeHighlightFile('tf', '30', 'none', '255', '#151515')
+
+" custom highlight colors
+let s:git_orange = 'F54D27'
+
+let g:NERDTreeExactMatchHighlightColor = {} " this line is needed to avoid error
+let g:NERDTreeExactMatchHighlightColor['.gitignore'] = s:git_orange " sets the color for .gitignore files
 
 " Close on open
 let NERDTreeQuitOnOpen=1
@@ -337,6 +346,7 @@ function! CleanNoNameEmptyBuffers()
    endif
 endfunction
 
+" Close [No Name] tabs
 nnoremap <silent> ,C :call CleanNoNameEmptyBuffers()<CR>
 
 " Xuyuanp/nerdtree-git-plugin {{{
@@ -344,6 +354,12 @@ let g:NERDTreeGitStatusShowIgnored = 1
 
 " cmap git Git
 " }}} Xuyuanp/nerdtree-git-plugin
+
+" CocCommands {{{
+autocmd FileType go nmap gtj :CocCommand go.tags.add json<cr>
+autocmd FileType go nmap gty :CocCommand go.tags.add yaml<cr>
+autocmd FileType go nmap gtx :CocCommand go.tags.clear<cr>
+" }}} CocCommands
 
 " morhetz/gruvbox {{{
 colorscheme gruvbox
@@ -365,6 +381,9 @@ nmap <leader>ac <Plug>(coc-codeaction)
 
 " Remap for do action format
 nnoremap <silent> F :call CocAction('format')<CR>
+
+" Organize imports on save
+" autocmd BufWritePre *.go :call CocAction('organizeImport')
 
 " Formatting selected code.
 xmap <leader>f  <Plug>(coc-format-selected)
