@@ -1,7 +1,12 @@
 #!/bin/bash
 
-PWD=$(pwd)
-ZSRCDOT=${PWD}/zsh/zshrc.cfg
+if [ ! -d ~/.dotfiles ];
+   mkdir ~/.dotfiles
+fi
+
+cp -r . ~/.dotfiles
+
+ZSRCDOT=~/.dotfiles/zsh/zshrc.cfg
 
 PACKAGES="nodejs npm yarn
    docker.io docker-compose packer
@@ -27,6 +32,9 @@ sudo apt-get -y install apt-fast curl
 
 echo "Installing packages"
 sudo apt -y install $PACKAGES
+
+# Install helm with snap
+sudo snap install helm --classic
 
 sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
@@ -109,7 +117,7 @@ goenv install 1.15.3
 goenv global 1.15.3
 
 echo "Configuring vim"
-./vim/vim.install.sh
+~/.dotfiles/vim/vim.install.sh
 
 git config --global push.default current
 git config --global pull.default current

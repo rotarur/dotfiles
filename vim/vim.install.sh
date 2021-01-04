@@ -4,4 +4,4 @@ echo "Creating neovim folders and undodir"
 nvimfoler=~/.config/nvim
 
 mkdir -p $nvimfoler/undodir
-cp vim/init.vim $nvimfoler/
+ln -s ~/.dotfiles/vim/init.vim $nvimfoler/
