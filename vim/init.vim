@@ -19,7 +19,7 @@ set smarttab " Autotabs for certain code
 set tabstop=3
 
 set list
-set listchars=tab:→\ ,eol:¬,trail:⋅,extends:❯,precedes:❮
+set listchars=tab:\ \ ,trail:·
 
 " when indenting with '>', use 3 spaces width
 set shiftwidth=3
@@ -79,9 +79,9 @@ set inccommand=nosplit
 set encoding=utf8
 set spellfile=~/.config/nvim/en.utf-8.add
 
-if has('mouse')
-   set mouse=a
-endif
+" if has('mouse')
+"    set mouse=a
+" endif
 
 " file type configuration
 autocmd FileType yaml setlocal shiftwidth=2 softtabstop=2 expandtab
@@ -199,7 +199,13 @@ let g:NERDToggleCheckAllLines = 1
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
-let g:airline_powerline_fonts = 1
+let g:airline_theme='simple'
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#left_sep = ' '
+let g:airline#extensions#tabline#left_alt_sep = '|'
+let g:airline#extensions#tabline#formatter = 'unique_tail'
+
+" let g:airline_powerline_fonts = 1
 let g:ale_completion_enabled = 1
 let g:ale_linters_explicit = 1
 let g:ale_linters = {
@@ -311,7 +317,7 @@ endif
 " }}}
 
 " nerdtree {{{
-Plug 'scrooloose/nerdtree'
+Plug 'preservim/nerdtree'
 
 " mapping
 map <C-n> :NERDTreeToggle<CR>
@@ -325,7 +331,8 @@ let NERDTreeAutoDeleteBuffer = 1
 let NERDTreeShowHidden=1
 let NERDTreeIgnore = ['\.pyc$', '__pycache__']
 
-let g:nerdtree_tabs_open_on_gui_startup = 0
+let g:nerdtree_tabs_open_on_gui_startup = 1
+let g:nerdtree_tabs_autofind = 1
 
 " prevent opening the same file
 set switchbuf=useopen,usetab
@@ -336,6 +343,11 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 " " Open nerdtree when vim starts up on opening a directory
 " autocmd StdinReadPre * let s:std_in=1
 " autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | exe 'cd '.argv()[0] | endif
+
+" Start NERDTree when Vim starts with a directory argument.
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') |
+    \ execute 'NERDTree' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | endif
 
 " " If no file specified open nerdtree
 " autocmd StdinReadPre * let s:std_in=1
@@ -424,6 +436,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 
 nmap <silent> <leader>gs :Gstatus<cr>
+nmap <leader>gp :Gpush<cr>
 nmap <leader>ge :Gedit<cr>
 nmap <silent><leader>gr :Gread<cr>
 nmap <silent><leader>gb :Gblame<cr>
@@ -485,7 +498,6 @@ Plug 'powerline/fonts'
 Plug 'ryanoasis/vim-devicons'
 Plug 'vim-utils/vim-man'
 " Plug 'dkprice/vim-easygrep'
-Plug 'ekalinin/Dockerfile.vim'
 
 " highlight conflicts
 match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'

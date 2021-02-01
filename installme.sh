@@ -15,7 +15,8 @@ PACKAGES="nodejs npm yarn
    terminator zsh containerd ruby-full
    gnupg2 virtualbox keepassx network-manager-openconnect-gnome
    default-jre python3-pip python python-dev evince
-   jq dconf-editor tmux fonts-firacode"
+   jq dconf-editor tmux fonts-firacode
+   tree atop nmap"
 
 sudo apt-get -y update
 
@@ -35,6 +36,9 @@ sudo apt -y install $PACKAGES
 
 # Install helm with snap
 sudo snap install helm --classic
+
+# Install kustomize with snap
+sudo snap install kustomize
 
 sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
@@ -109,6 +113,7 @@ fi
 source ${ZSRCDOT}
 
 vim +PluginInstall +qall
+vim +'CocInstall coc-json coc-tsserver coc-pairs coc-yaml coc-docker coc-go coc-python'
 
 tfenv install 0.12.20
 tfenv use 0.12.20
