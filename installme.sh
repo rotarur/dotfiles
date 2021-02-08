@@ -58,7 +58,7 @@ rm -f awscliv2.zip
 # Install fzf
 echo "Install fzf"
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-~/.fzf/install
+echo -e "y/n" | ~/.fzf/install
 
 echo "Install ohmyzsh"
 sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
