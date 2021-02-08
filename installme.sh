@@ -97,6 +97,9 @@ ln -s ~/.tfenv/bin/* $HOME/bin
 mkdir -p ~/.rbenv/plugins
 git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
 
+echo "Installing zsh plugins"
+git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+
 if [ -f ~/.zshrc ]; then
    echo "Configuring zshrc"
 
@@ -108,6 +111,9 @@ if [ -f ~/.zshrc ]; then
       echo "zshrc.dotfiles will be configured"
       echo "source ${ZSRCDOT}" >> ~/.zshrc
    fi
+
+   echo "Configuring zsh plugins"
+   sed '/^source\ \$ZSH\/oh-my-zsh.sh/i source\ \$HOME\/.dotfiles\/zsh\/plugins.sh' -i ~/.zshrc
 fi
 
 source ${ZSRCDOT}
