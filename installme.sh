@@ -118,9 +118,6 @@ fi
 
 source ${ZSRCDOT}
 
-vim +PluginInstall +qall
-vim +'CocInstall coc-json coc-tsserver coc-pairs coc-yaml coc-docker coc-go coc-python'
-
 tfenv install 0.12.20
 tfenv use 0.12.20
 
@@ -133,5 +130,4 @@ echo "Configuring vim"
 git config --global push.default current
 git config --global pull.default current
 
-echo -e
-success "Done."
+echo "Done."
