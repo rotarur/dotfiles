@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ ! -d ~/.dotfiles ];
+if [ ! -d ~/.dotfiles ]; then
    mkdir ~/.dotfiles
 fi
 
