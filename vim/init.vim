@@ -246,7 +246,11 @@ let g:coc_global_extensions = [
         \ 'coc-vimlsp',
         \ 'coc-emmet',
         \ 'coc-ultisnips',
-        \ 'coc-diagnostic'
+        \ 'coc-diagnostic',
+        \ 'coc-yaml',
+        \ 'coc-docker',
+        \ 'coc-go',
+        \ 'coc-python'
         \ ]
 
 autocmd FileType go nmap gtj :CocCommand go.tags.add json<cr>

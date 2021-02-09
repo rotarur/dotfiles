@@ -23,16 +23,24 @@ sudo apt-get -y update
 echo "Remove nano"
 sudo apt -y purge nano
 
+sudo apt -y install --no-install-recommends software-properties-common
+
 echo "Adding additional repositories"
 sudo add-apt-repository -y universe
 
 echo "Install apt-fast"
 sudo add-apt-repository -y ppa:apt-fast/stable
 sudo apt-get -y update
-sudo apt-get -y install apt-fast curl
+echo -e "1\n5\nno\n" | sudo apt-get -y install apt-fast
 
 echo "Installing packages"
-sudo apt -y install $PACKAGES
+sudo apt update && sudo apt -y install $PACKAGES
+
+
+if [[ ! -n "$(command -v snap)" ]]; then
+   echo "Installing snapd on system"
+   sudo apt -y install snapd
+fi
 
 # Install helm with snap
 sudo snap install helm --classic
@@ -58,10 +66,12 @@ rm -f awscliv2.zip
 # Install fzf
 echo "Install fzf"
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-echo -e "y/n" | ~/.fzf/install
+echo -e "y\n" | ~/.fzf/install
 
 echo "Install ohmyzsh"
-sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -o install.sh
+echo -e "Y\n" | sh install.sh
+rm -f install.sh
 
 echo "Install vagrant"
 curl -O https://releases.hashicorp.com/vagrant/2.2.6/vagrant_2.2.6_x86_64.deb
@@ -82,7 +92,10 @@ sudo apt -y install ./minikube_latest_amd64.deb
 rm -f minikube_latest_amd64.deb
 
 sudo usermod -s $ZSH $(whoami)
-sudo usermod -aG docker rotarur
+GROUP=$(grep docker /etc/group)
+if [ ${GROUP} ]; then
+   sudo usermod -aG docker $(whoami)
+fi
 
 git clone https://github.com/pyenv/pyenv.git ~/.pyenv
 
