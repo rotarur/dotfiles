@@ -15,7 +15,7 @@ PACKAGES="nodejs npm yarn
    terminator zsh containerd ruby-full
    gnupg2 virtualbox keepassx network-manager-openconnect-gnome
    default-jre python3-pip python python-dev evince
-   jq dconf-editor tmux fonts-firacode
+   jq dconf-editor tmux fonts-firacode fonts-powerline
    tree atop nmap"
 
 sudo apt-get -y update
