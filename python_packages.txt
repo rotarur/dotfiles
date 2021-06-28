@@ -1,0 +1,5 @@
+athena-cli
+boto3
+virtualenv
+prompt_toolkit
+kube-shell

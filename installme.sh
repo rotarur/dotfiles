@@ -8,20 +8,23 @@ cp -r . ~/.dotfiles
 
 ZSRCDOT=~/.dotfiles/zsh/zshrc.cfg
 
+# network-manager-openconnect-gnome if not for KDE - fix it
+
 PACKAGES="nodejs npm yarn
    docker.io docker-compose packer
-   ansible neovim silversearcher-ag
-   apt-transport-https curl whois
+   neovim silversearcher-ag gimp ansible
+   apt-transport-https curl whois fzf
    terminator zsh containerd ruby-full
-   gnupg2 virtualbox keepassx network-manager-openconnect-gnome
+   gnupg2 virtualbox keepassx python-setuptools
    default-jre python3-pip python python-dev evince
    jq dconf-editor tmux fonts-firacode fonts-powerline
-   tree atop nmap"
-
-sudo apt-get -y update
+   tree atop nmap network-manager-openvpn"
 
 echo "Remove nano"
 sudo apt -y purge nano
+
+echo "Install pip requirements"
+sudo pip3 install -r python_packages.txt
 
 sudo apt -y install --no-install-recommends software-properties-common
 
@@ -33,40 +36,31 @@ sudo add-apt-repository -y ppa:apt-fast/stable
 sudo apt-get -y update
 echo -e "1\n5\nno\n" | sudo apt-get -y install apt-fast
 
+echo "Install Atom Editor"
+wget -qO - https://packagecloud.io/AtomEditor/atom/gpgkey | sudo apt-key add -
+sudo sh -c 'echo "deb [arch=amd64] https://packagecloud.io/AtomEditor/atom/any/ any main" > /etc/apt/sources.list.d/atom.list'
+sudo apt -y update
+sudo apt -y install atom
+
 echo "Installing packages"
 sudo apt update && sudo apt -y install $PACKAGES
-
 
 if [[ ! -n "$(command -v snap)" ]]; then
    echo "Installing snapd on system"
    sudo apt -y install snapd
 fi
 
-# Install helm with snap
-sudo snap install helm --classic
-
-# Install kustomize with snap
-sudo snap install kustomize
+echo "Install telegram using snap"
+sudo snap install telegram-desktop
+ln -s /snap/telegram-desktop/current/meta/gui/telegram-desktop.desktop ${HOME}/.local/share/applications/
 
 sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 
 ZSH=$(which zsh)
 
-# awscli version 1
-# pip3 install awscli
-
-# Install awscli version2
-echo "Install awscli version 2"
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip
-sudo ./aws/install
-rm -f awscliv2.zip
-
-# Install fzf
-echo "Install fzf"
-git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-echo -e "y\n" | ~/.fzf/install
+echo "Configuring tmux"
+ln -sf ${HOME}/.dotfiles/tmux/tmux.conf ${HOME}/.tmux.conf
 
 echo "Install ohmyzsh"
 curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -o install.sh
@@ -74,24 +68,51 @@ echo -e "Y\n" | sh install.sh
 rm -f install.sh
 
 echo "Install vagrant"
-curl -O https://releases.hashicorp.com/vagrant/2.2.6/vagrant_2.2.6_x86_64.deb
-
+curl -fsSL https://releases.hashicorp.com/vagrant/2.2.6/vagrant_2.2.6_x86_64.deb
 sudo apt -y install ./vagrant_2.2.6_x86_64.deb
 rm -f vagrant_2.2.6_x86_64.deb
 
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+pushd
+echo "Install asdf package manager"
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf
+cd ~/.asdf
+git checkout "$(git describe --abbrev=0 --tags)"
+. $HOME/.asdf/asdf.sh
+popd
 
-echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+echo "Install helm with asdf"
+asdf plugin-add helm https://github.com/Antiarchitect/asdf-helm.git &&\
+asdf install helm latest &&\
+asdf global helm latest
 
-sudo apt update
-sudo apt -y install kubectl
+echo "Install kustomize with asdf"
+asdf plugin-add kustomize https://github.com/Banno/asdf-kustomize.git &&\
+asdf install kustomize latest &&\
+asdf global kustomize latest
 
-echo "Install minikube"
-curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb
-sudo apt -y install ./minikube_latest_amd64.deb
-rm -f minikube_latest_amd64.deb
+echo "Install awscli with asdf"
+asdf install awscli latest &&\
+asdf global awscli latest
 
+echo "Install kubectl with asdf"
+asdf plugin-add kubectl https://github.com/asdf-community/asdf-kubectl.git &&\
+asdf install kubectl latest &&\
+asdf global kubectl latest
+
+echo "Install kubectx with asdf"
+asdf plugin add kubectx
+asdf install kubectx 0.8.0
+asdf global kubectx 0.8.0
+
+echo "Install minikube with asdf"
+asdf plugin-add minikube https://github.com/alvarobp/asdf-minikube.git &&\
+asdf install minikube latest &&\
+asdf global minikube latest
+
+echo "Changing default shell"
 sudo usermod -s $ZSH $(whoami)
+
+echo "Adding to docker group"
 GROUP=$(grep docker /etc/group)
 if [ ${GROUP} ]; then
    sudo usermod -aG docker $(whoami)
@@ -142,5 +163,11 @@ echo "Configuring vim"
 
 git config --global push.default current
 git config --global pull.default current
+
+echo "Configuring sysctl"
+cat << EOF | sudo tee /etc/sysctl.conf
+vm.overcommit_memory = 1
+EOF
+sudo sysctl -p
 
 echo "Done."

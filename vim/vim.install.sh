@@ -6,4 +6,4 @@ nvimfolder=~/.config/nvim
 mkdir -p $nvimfolder/undodir
 ln -s ~/.dotfiles/vim/init.vim $nvimfolder/
 
-vim +PluginInstall +qall
+nvim +PlugInstall
