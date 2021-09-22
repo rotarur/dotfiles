@@ -24,32 +24,35 @@ This repository serves as a documentation on how I have my environment configure
 - https://github.com/tiagofumo/vim-nerdtree-syntax-highlight
 
 ### Notes
-- https://github.com/davidbailey00/notion-deb-builder - `Open source Note`
-  - https://github.com/users/davidbailey00/packages/container/package/notion-linux - `installation guide`
+- [Open source Note](https://github.com/davidbailey00/notion-deb-builder)
+  - [Installation guide](https://github.com/users/davidbailey00/packages/container/package/notion-linux)
 
 ### Credentials
 - https://bitwarden.com/
 - https://www.keepassx.org/
 
 ### Linux
-- https://github.com/aristocratos/bpytop - `advanced top utility`
+- [advanced top utility](https://github.com/aristocratos/bpytop)
 
 ### Vim
-- https://github.com/vim-syntastic/syntastic - `vim syntax checker`
-- https://github.com/ctrlpvim/ctrlp.vim - `vim finder`
+- [vim syntax checker](https://github.com/vim-syntastic/syntastic)
+- [vim finder](https://github.com/ctrlpvim/ctrlp.vim)
 
 ### Editors
 - https://code.visualstudio.com/
 - https://www.jetbrains.com/
 
 ### Kubernetes
-- https://github.com/helm/helm - `Kubernetes package manager`
-- https://github.com/derailed/k9s - `Kubernetes UI for cluster management`
-- https://k3s.io - `lightweight kubernetes`
-- https://k3d.io - `dockerized kubernetes`
+- [Kubernetes package manager](https://github.com/helm/helm)
+- [Kubernetes UI for cluster management](https://github.com/derailed/k9s)
+- [Lightweight kubernetes](https://k3s.io)
+- [Dockerized kubernetes](https://k3d.io)
 
 ### Screen recording
 - https://asciinema.org/
 
 ## asdf
 - https://asdf-vm.com/#/
+
+## Mikrotik
+- [Static DNS Auto-create](https://www.tolaris.com/2014/09/27/synchronising-dhcp-and-dns-on-mikrotik-routers/)
