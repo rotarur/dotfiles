@@ -1,5 +1,4 @@
 " vim:set foldmethod=marker foldlevel=0
-
 " autoinstall vim-plug
 let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
 if empty(glob(data_dir . '/autoload/plug.vim'))
@@ -8,12 +7,13 @@ if empty(glob(data_dir . '/autoload/plug.vim'))
 endif
 
 " vim-plug {{{
-call plug#begin(stdpath('data') . '/plugged')
+call plug#begin('~/.vim/plugged')
+
+syntax on " Syntax highlighting
 
 " colors {{{
 filetype plugin indent on
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-syntax on " Syntax highlighting
 
 autocmd BufWritePre * :%s/\s\+$//e
 autocmd BufWritePre * :retab
