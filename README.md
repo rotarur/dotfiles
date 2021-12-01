@@ -56,3 +56,6 @@ This repository serves as a documentation on how I have my environment configure
 
 ## Mikrotik
 - [Static DNS Auto-create](https://www.tolaris.com/2014/09/27/synchronising-dhcp-and-dns-on-mikrotik-routers/)
+
+## Nvim plugin database
+- [neovim craft](https://neovimcraft.com/)
