@@ -1,4 +1,7 @@
 " vim:set foldmethod=marker foldlevel=0
+" Legend
+" <s-tab> = Shift + Tab
+" <c-p> = Control + p
 
 " autoinstall vim-plug
 let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
@@ -43,6 +46,16 @@ set shiftround
 " }}} spaces & tabs
 
 set backspace=indent,eol,start " make backspace behave in a sane manner
+
+" copy to clipboard with Ctrl-C
+
+" map <C-x> :!pbcopy<CR>
+" vmap <C-c> :w !pbcopy<CR><CR>
+"
+" " paste from clipboard with Ctrl-V
+"
+" set pastetoggle=<F10>
+" inoremap <C-v> <F10><C-r>+<F10>
 
 " clipboard {{{
 set clipboard+=unnamedplus
@@ -94,7 +107,6 @@ autocmd FileType tf setlocal shiftwidth=2 softtabstop=2 expandtab
 autocmd FileType json setlocal shiftwidth=3 softtabstop=3 expandtab
 autocmd FileType dockerfile setlocal shiftwidth=1 softtabstop=1 expandtab
 
-
 " Use ctrl-[hjkl] to select the active split!
 nmap <silent> <c-k> :wincmd k<CR>
 nmap <silent> <c-j> :wincmd j<CR>
@@ -103,6 +115,27 @@ nmap <silent> <c-l> :wincmd l<CR>
 
 " disable highlight
 nmap <leader>n :noh<cr>
+
+if has("gui_macvim")
+   " Press Ctrl-Tab to switch between open tabs (like browser tabs)
+   " to the right side.
+   noremap <C-Tab> :tabnext<CR>
+   " to the left press Ctrl-Shift-Tab
+   noremap <C-S-Tab> :tabprev<CR>
+
+   " Switch to specific tab numbers using Command-number
+   noremap <D-1> :tabn 1<CR>
+   noremap <D-2> :tabn 2<CR>
+   noremap <D-3> :tabn 3<CR>
+   noremap <D-4> :tabn 4<CR>
+   noremap <D-5> :tabn 5<CR>
+   noremap <D-6> :tabn 6<CR>
+   noremap <D-7> :tabn 7<CR>
+   noremap <D-8> :tabn 8<CR>
+   noremap <D-9> :tabn 9<CR>
+   " Command-0 goes to the last tab
+   noremap <D-0> :tablast<CR>
+endif
 
 " Uncomment the following to have Vim jump to the last position when
 " reopening a file
@@ -150,7 +183,7 @@ nnoremap <leader>i mzgg=G`z<CR>
 nnoremap <leader><space> :nohlsearch<CR>
 
 " buffers
-nnoremap <tab> :bn<CR>
+noremap <tab> :bn<CR>
 nnoremap <s-tab> :bp<CR>
 nnoremap <leader>bd :bd<CR>
 
@@ -173,6 +206,25 @@ map <F4> :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
 Plug 'morhetz/gruvbox'
 
 autocmd vimenter * ++nested colorscheme gruvbox
+
+" Enable italic, only works for urxvt or gnome-terminal
+let g:gruvbox_italic=1
+
+"Use 24-bit (true-color) mode in Vim/Neovim when outside tmux.
+"If you're using tmux version 2.2 or later, you can remove the outermost $TMUX check and use tmux's 24-bit color support
+"(see < http://sunaku.github.io/tmux-24bit-color.html#usage > for more information.)
+if (empty($TMUX))
+  if (has("nvim"))
+    "For Neovim 0.1.3 and 0.1.4 < https://github.com/neovim/neovim/pull/2198 >
+    let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+  endif
+  "For Neovim > 0.1.5 and Vim > patch 7.4.1799 < https://github.com/vim/vim/commit/61be73bb0f965a895bfb064ea3e55476ac175162 >
+  "Based on Vim patch 7.4.1770 (`guicolors` option) < https://github.com/vim/vim/commit/8a633e3427b47286869aa4b96f2bfc1fe65b25cd >
+  " < https://github.com/neovim/neovim/wiki/Following-HEAD#20160511 >
+  if (has("termguicolors"))
+    set termguicolors
+  endif
+endif
 
 augroup spellcheck_colors
   autocmd!
@@ -368,11 +420,16 @@ else
 endif
 " }}}
 
+" Plug 'norcalli/nvim-colorizer.lua'
+
 " nerdtree {{{
 Plug 'preservim/nerdtree'
 
 " mapping
 map <C-n> :NERDTreeToggle<CR>
+
+" Mirror the NERDTree before showing it. This makes it the same on all tabs.
+nnoremap <C-n> :NERDTreeMirror<CR>:NERDTreeFocus<CR>
 
 let NERDTreeHijackNetrw=1
 let NERDTreeMinimalUI = 1
@@ -386,11 +443,23 @@ let NERDTreeIgnore = ['\.pyc$', '__pycache__']
 let g:nerdtree_tabs_open_on_gui_startup = 1
 let g:nerdtree_tabs_autofind = 1
 
+" custom highlight colors
+let s:git_orange = 'F54D27'
+
+let g:NERDTreeExactMatchHighlightColor = {} " this line is needed to avoid error
+let g:NERDTreeExactMatchHighlightColor['.gitignore'] = s:git_orange " sets the color for .gitignore files
+
+" Close on open
+" let NERDTreeQuitOnOpen=1
+
+" open in tab
+let NERDTreeCustomOpenArgs={'file':{'where': 't'}}
+
 " prevent opening the same file
 set switchbuf=useopen,usetab
 
-" Close vim if only nerdtree opened
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+" Exit Vim if NERDTree is the only window remaining in the only tab.
+autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
 
 " " Open nerdtree when vim starts up on opening a directory
 " autocmd StdinReadPre * let s:std_in=1
@@ -430,22 +499,11 @@ call NERDTreeHighlightFile('js', 'Red', 'none', '#ffa500', '#151515')
 call NERDTreeHighlightFile('php', 'Magenta', 'none', '#ff00ff', '#151515')
 call NERDTreeHighlightFile('tf', '30', 'none', '255', '#151515')
 
-" custom highlight colors
-let s:git_orange = 'F54D27'
-
-let g:NERDTreeExactMatchHighlightColor = {} " this line is needed to avoid error
-let g:NERDTreeExactMatchHighlightColor['.gitignore'] = s:git_orange " sets the color for .gitignore files
-
-" Close on open
-let NERDTreeQuitOnOpen=1
-
-" open in tab
-let NERDTreeCustomOpenArgs={'file':{'where': 't'}}
 " }}}
 
 "nerdtree-git-plugin {{{
 Plug 'Xuyuanp/nerdtree-git-plugin'
-let g:NERDTreeGitStatusShowIgnored = 1
+" let g:NERDTreeGitStatusShowIgnored = 1
 
 " cmap git Git
 " }}}
@@ -470,7 +528,8 @@ let g:fzf_commits_log_options = '--graph --color=always --format="%C(auto)%h%d %
 let g:fzf_commands_expect = 'alt-enter,ctrl-x'
 
 " fzf
-nnoremap <c-p> :GFiles<CR>
+nnoremap <c-p> :Files<CR>
+nnoremap <leader>f :Ag<CR>
 
 let g:fzf_action = {
   \ 'return': 'tab split',
@@ -487,12 +546,14 @@ Plug 'dense-analysis/ale'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 
-nmap <silent> <leader>gs :Gstatus<cr>
-nmap <leader>gp :Gpush<cr>
-nmap <leader>ge :Gedit<cr>
-nmap <silent><leader>gr :Gread<cr>
-nmap <silent><leader>gb :Gblame<cr>
-nmap <silent><leader>g :G<cr>
+nmap <silent> <leader>gs :Git status<cr>
+nmap <leader>gp :Git push<cr>
+nmap <leader>gh :Git rebase<cr>
+nmap <leader>gi :Git rebase -i<cr>
+nmap <leader>ge :Git edit<cr>
+nmap <silent><leader>gr :Git read<cr>
+nmap <silent><leader>gb :Git blame<cr>
+nmap <silent><leader>g :Git<cr>
 " }}}
 
 " markdown {{{
@@ -505,7 +566,7 @@ let g:mkdp_auto_start = 0
 " set to 1, the nvim will auto close current preview window when change
 " from markdown buffer to another buffer
 " default: 1
-let g:mkdp_auto_close = 1
+let g:mkdp_auto_close = 0
 
 " set to 1, the vim will refresh markdown when save the buffer or
 " leave from insert mode, default 0 is auto refresh markdown as you edit or
@@ -520,7 +581,7 @@ let g:mkdp_command_for_global = 0
 
 " specify browser to open preview page
 " default: 'Google Chrome'
-" let g:mkdp_browser = 'Google Chrome'
+let g:mkdp_browser = 'Brave Browser'
 
 let g:mkdp_preview_options = {
     \ 'mkit': {},
