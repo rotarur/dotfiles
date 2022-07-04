@@ -172,6 +172,15 @@ source ${ZSRCDOT}
 echo "Configuring vim"
 ~/.dotfiles/vim/vim.install.sh
 
+echo "Installing alacritty"
+git clone https://github.com/alacritty/alacritty.git /var/tmp/alacritty
+cd /var/tmp/alacritty
+make app
+sudo cp cp -r target/release/osx/Alacritty.app /Applications/
+
+echo "Configuring alacritty"
+ln -s ~/.dotfiles/alacritty/alacritty.yml ~/.config/alacritty/
+
 git config --global push.default current
 git config --global pull.default current
 
