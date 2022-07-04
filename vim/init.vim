@@ -1,74 +1,85 @@
 " vim:set foldmethod=marker foldlevel=0
-" Legend
+" LEGEND ------------------------------------------------ {{{
 " <s-tab> = Shift + Tab
 " <c-p> = Control + p
+" <leader>n - enable nohighlight
+" jj - in edit mode works like Escape
+" Folding:
+" zo - open a single fold under the cursor
+" zc - close the fold under the cursor
+" zR - open all folds
+" zM - close all folds
+" }}}
 
-" autoinstall vim-plug
+" autoinstall vim-plug ---------------------------------- {{{
 let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
 if empty(glob(data_dir . '/autoload/plug.vim'))
-  silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+   silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
+" }}}
 
-" vim-plug {{{
+" vim-plug ---------------------------------------------- {{{
 call plug#begin(stdpath('data') . '/plugged')
 
-" colors {{{
+" colors ------------------------------------------------ {{{
 filetype plugin indent on
-let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+" let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 syntax on " Syntax highlighting
+" }}}
 
+" remove trailing spaces and null lines on write -------- {{{
 autocmd BufWritePre * :%s/\s\+$//e
 autocmd BufWritePre * :retab
-" }}} colors
+" }}}
 
-" spaces & tabs {{{
-set smarttab " Autotabs for certain code
+" ENCODING ---------------------------------------------- {{{
+set encoding=utf-8  " The encoding displayed.
+set fileencoding=utf-8  " The encoding written to file
+" }}}
 
+" SPACES ------------------------------------------------ {{{
+" Autotabs for certain code
+set smarttab
 " show existing tab with 3 spaces width
 set tabstop=3
-
 set list
 set listchars=tab:\ \ ,trail:·
-
 " when indenting with '>', use 3 spaces width
 set shiftwidth=3
-
 " on pressing tab, insert 3 spaces
 set expandtab
-
 " copy indent from the previous line
 set copyindent
-
 " round indent to a multiple of 'shiftwidth'
 set shiftround
+" }}}
 
-" }}} spaces & tabs
+" TABS -------------------------------------------------- {{{
+" use Shift H or Shift L to change tabs
+nnoremap H gT
+nnoremap L gt
+" auto indent between brackets
+inoremap ( ()<Esc>:let leavechar=")"<CR>i
+inoremap { {}<Esc>:let leavechar="}"<CR>i
+inoremap [ []<Esc>:let leavechar="]"<CR>i
+imap <C-j> <Esc>:exec "normal f" . leavechar<CR>a
+
+nnoremap tt :tabnew<CR>
+" }}}
 
 set backspace=indent,eol,start " make backspace behave in a sane manner
 
-" copy to clipboard with Ctrl-C
-
-" map <C-x> :!pbcopy<CR>
-" vmap <C-c> :w !pbcopy<CR><CR>
-"
-" " paste from clipboard with Ctrl-V
-"
-" set pastetoggle=<F10>
-" inoremap <C-v> <F10><C-r>+<F10>
-
-" clipboard {{{
+" CLIPBOARD --------------------------------------------- {{{
 set clipboard+=unnamedplus
-" }}} clipboard
+" }}}
 
-" ui config {{{
+" UI CONFIG --------------------------------------------- {{{
 set wrap
 set wrapmargin=8 " wrap lines when coming within n characters from side
 set linebreak " set soft wrapping
 set showbreak=↪
 set autoindent " automatically set indent of new line
-set ttyfast " faster redrawing
-set backspace=indent,eol,start
 set noerrorbells
 set visualbell
 set diffopt+=vertical,iwhite,internal,algorithm:patience,hiddenoff
@@ -97,78 +108,54 @@ set path+=**
 set inccommand=nosplit
 set relativenumber
 set rnu
-" if has('mouse')
-"    set mouse=a
-" endif
+set colorcolumn=120
+" set signcolumn=number         " merge sign columns and number column into one
+" }}}
 
-" file type configuration
+" SEARCH ------------------------------------------------ {{{
+set incsearch  " search as characters are entered
+set nohlsearch
+set smartcase  " ignore case if search pattern is lower case
+" case-sensitive otherwise
+set magic      " set magic on, for regex
+"nmap <space> /
+" }}}
+
+" unmap <A-3>
+
+" FILETYPE CONFIGURATIONS ------------------------------- {{{
 autocmd FileType yaml setlocal shiftwidth=2 softtabstop=2 expandtab
+autocmd FileType go setlocal shiftwidth=3 softtabstop=3 noexpandtab
+autocmd FileType yml setlocal shiftwidth=2 softtabstop=2 expandtab
 autocmd FileType tf setlocal shiftwidth=2 softtabstop=2 expandtab
 autocmd FileType json setlocal shiftwidth=3 softtabstop=3 expandtab
 autocmd FileType dockerfile setlocal shiftwidth=1 softtabstop=1 expandtab
+" }}}
 
-" Use ctrl-[hjkl] to select the active split!
+" SPLIT ------------------------------------------------- {{{
+" Use ctrl-[hjkl] to select the active split
 nmap <silent> <c-k> :wincmd k<CR>
 nmap <silent> <c-j> :wincmd j<CR>
 nmap <silent> <c-h> :wincmd h<CR>
 nmap <silent> <c-l> :wincmd l<CR>
+" You can split the window in Vim by typing :split or :vsplit.
 
-" disable highlight
+" You can split a window into sections by typing `:split` or `:vsplit`.
+" Display cursorline and cursorcolumn ONLY in active window.
+augroup cursor_off
+   autocmd!
+   autocmd WinLeave * set nocursorline nocursorcolumn
+   autocmd WinEnter * set cursorline cursorcolumn
+augroup END
+" }}}
+
+" disable highlight ------------------------------------- {{{
 nmap <leader>n :noh<cr>
-
-if has("gui_macvim")
-   " Press Ctrl-Tab to switch between open tabs (like browser tabs)
-   " to the right side.
-   noremap <C-Tab> :tabnext<CR>
-   " to the left press Ctrl-Shift-Tab
-   noremap <C-S-Tab> :tabprev<CR>
-
-   " Switch to specific tab numbers using Command-number
-   noremap <D-1> :tabn 1<CR>
-   noremap <D-2> :tabn 2<CR>
-   noremap <D-3> :tabn 3<CR>
-   noremap <D-4> :tabn 4<CR>
-   noremap <D-5> :tabn 5<CR>
-   noremap <D-6> :tabn 6<CR>
-   noremap <D-7> :tabn 7<CR>
-   noremap <D-8> :tabn 8<CR>
-   noremap <D-9> :tabn 9<CR>
-   " Command-0 goes to the last tab
-   noremap <D-0> :tablast<CR>
-endif
+" }}}
 
 " Uncomment the following to have Vim jump to the last position when
 " reopening a file
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-
-" Always show the signcolumn, otherwise it would shift the text each time
-" diagnostics appear/become resolved.
-if has("patch-8.1.1564")
-  " Recently vim can merge signcolumn and number column into one
-  set signcolumn=number
-else
-  set signcolumn=yes
-endif
-
-set colorcolumn=120
-" }}} ui config
-
-" Search {{{
-set incsearch  " search as characters are entered
-set hlsearch   " highlight matche
-set ignorecase " ignore case when searching
-set smartcase  " ignore case if search pattern is lower case
-               " case-sensitive otherwise
-set magic      " set magic on, for regex
-"nmap <space> /
-" }}} Search
-
-" Folding {{{
-set nofoldenable
-set foldlevelstart=10  " default folding level when buffer is opened
-set foldnestmax=10     " maximum nested fold
-set foldmethod=indent  " fold based on indentation
-" }}} Folding
 
 " Leader & Mappings {{{
 let mapleader=","   " leader is comma
@@ -178,20 +165,31 @@ imap <leader>o <c-o><s-o>
 
 " fix indentation
 nnoremap <leader>i mzgg=G`z<CR>
-
-" turn off search highlights
-nnoremap <leader><space> :nohlsearch<CR>
+" }}}
 
 " buffers
 noremap <tab> :bn<CR>
 nnoremap <s-tab> :bp<CR>
 nnoremap <leader>bd :bd<CR>
+map <leader>l :let @*=expand("%")<CR>
 
+" EDIT MODE --------------------------------------------- {{{
 " shortcut to save
 nmap <leader>, :w<cr>
 nmap <leader>w :w<CR>
 nmap <leader>x :x<CR>
 nmap <leader>q :q<CR>
+
+inoremap jj <esc>
+" unmap J
+" }}}
+
+" NORMAL MODE ------------------------------------------- {{{
+" Press \\ to jump back to the last cursor position.
+nnoremap <leader>\ ``
+" Press the space bar to type the : character in command mode.
+nnoremap <space> :
+" }}}
 
 " edit ~/.config/nvim/init.vim
 map <leader>ev :e! ~/.config/nvim/init.vim<cr>
@@ -202,37 +200,28 @@ map <leader>eg :e! ~/.gitconfig<cr>
 " fast header source switch
 map <F4> :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
 
-" gruvbox {{{
+" gruvbox ----------------------------------------------- {{{
 Plug 'morhetz/gruvbox'
 
 autocmd vimenter * ++nested colorscheme gruvbox
 
-" Enable italic, only works for urxvt or gnome-terminal
 let g:gruvbox_italic=1
 
-"Use 24-bit (true-color) mode in Vim/Neovim when outside tmux.
-"If you're using tmux version 2.2 or later, you can remove the outermost $TMUX check and use tmux's 24-bit color support
-"(see < http://sunaku.github.io/tmux-24bit-color.html#usage > for more information.)
-if (empty($TMUX))
-  if (has("nvim"))
-    "For Neovim 0.1.3 and 0.1.4 < https://github.com/neovim/neovim/pull/2198 >
-    let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-  endif
-  "For Neovim > 0.1.5 and Vim > patch 7.4.1799 < https://github.com/vim/vim/commit/61be73bb0f965a895bfb064ea3e55476ac175162 >
-  "Based on Vim patch 7.4.1770 (`guicolors` option) < https://github.com/vim/vim/commit/8a633e3427b47286869aa4b96f2bfc1fe65b25cd >
-  " < https://github.com/neovim/neovim/wiki/Following-HEAD#20160511 >
-  if (has("termguicolors"))
-    set termguicolors
-  endif
+" enable 24 bit color support if supported
+if (has("termguicolors"))
+   if (!(has("nvim")))
+      let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+   endif
+   set termguicolors
 endif
 
 augroup spellcheck_colors
-  autocmd!
-  autocmd ColorScheme gruvbox hi SpellBad cterm=underline ctermfg=red
+   autocmd!
+   autocmd ColorScheme gruvbox hi SpellBad cterm=underline ctermfg=red
 augroup END
 " }}}
 
-" nerdcommenter {{{
+" nerdcommenter ----------------------------------------- {{{
 Plug 'preservim/nerdcommenter'
 
 " Add spaces after comment delimiters by default
@@ -252,9 +241,11 @@ let g:NERDTrimTrailingWhitespace = 1
 
 " Enable NERDCommenterToggle to check all selected lines is commented or not
 let g:NERDToggleCheckAllLines = 1
+
+map <leader>d <Plug>NERDCommenterToggle
 " }}}
 
-" airline {{{
+" airline ----------------------------------------------- {{{
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
@@ -262,27 +253,17 @@ let g:airline_theme='simple'
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '|'
-let g:airline#extensions#tabline#formatter = 'unique_tail'
+let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
+let g:airline#extensions#ale#enabled = 1
 
-" let g:airline_powerline_fonts = 1
-let g:ale_completion_enabled = 1
-let g:ale_linters_explicit = 1
-let g:ale_linters = {
-            \ 'go': ["golint"],
-            \ 'php': ['phpstan']
-            \ }
-let g:ale_fixers = {
-            \ 'go': ["gofmt", "goimports"]
-            \ }
+let g:airline_powerline_fonts = 1
 let g:indentLine_showFirstIndentLevel = 0
 let g:indentLine_setColors = 0
 let g:indentLine_char_list = ['|', '¦', '┆', '┊']
-
 " }}}
 
-" UltiSnips {{{
+" UltiSnips --------------------------------------------- {{{
 Plug 'SirVer/ultisnips' " Snippets plugin
-
 " Snippets are separated from the engine. Add this if you want them:
 Plug 'honza/vim-snippets'
 
@@ -291,31 +272,62 @@ let g:UltiSnipsJumpForwardTrigger="<C-j>"
 let g:UltiSnipsJumpBackwardTrigger="<C-k>"
 " }}}
 
-" coc {{{
+" tpope/vim-pathogen ------------------------------------ {{{
+" Plug 'tpope/vim-pathogen'
+" disable all linters as that is taken care of by coc.nvim
+" let g:go_diagnostics_enabled = 0
+" let g:go_metalinter_enabled = []
+"
+" " don't jump to errors after metalinter is invoked
+" let g:go_jump_to_error = 0
+"
+" " automatically highlight variable your cursor is on
+" let g:go_auto_sameids = 0
+"
+" let g:go_fmt_autosave=1
+" " let g:go_asmfmt_autosave=0
+" let g:go_fmt_command = "goimports"
+" let g:go_auto_type_info = 1
+"
+" " syntax highlight
+" let g:go_highlight_types = 1
+" let g:go_highlight_fields = 1
+" let g:go_highlight_functions = 1
+" let g:go_highlight_function_calls = 1
+" let g:go_highlight_operators = 1
+" let g:go_highlight_extra_types = 1
+" let g:go_highlight_build_constraints = 1
+" let g:go_highlight_generate_tags = 1
+" }}}
+
+" coc --------------------------------------------------- {{{
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 let g:coc_global_extensions = [
-        \ 'coc-css',
-        \ 'coc-json',
-        \ 'coc-tsserver',
-        \ 'coc-eslint',
-        \ 'coc-tslint-plugin',
-        \ 'coc-pairs',
-        \ 'coc-sh',
-        \ 'coc-vimlsp',
-        \ 'coc-emmet',
-        \ 'coc-ultisnips',
-        \ 'coc-diagnostic',
-        \ 'coc-yaml',
-        \ 'coc-docker',
-        \ 'coc-go',
-        \ 'coc-python'
-        \ ]
+         \ 'coc-css',
+         \ 'coc-json',
+         \ 'coc-tsserver',
+         \ 'coc-eslint',
+         \ 'coc-tslint-plugin',
+         \ 'coc-pairs',
+         \ 'coc-git',
+         \ 'coc-sh',
+         \ 'coc-vimlsp',
+         \ 'coc-emmet',
+         \ 'coc-ultisnips',
+         \ 'coc-diagnostic',
+         \ 'coc-yaml',
+         \ 'coc-docker',
+         \ 'coc-go',
+         \ 'coc-python',
+         \ 'coc-markdown-preview-enhanced',
+         \ 'coc-webview',
+         \ 'coc-rls'
+         \ ]
 
 autocmd FileType go nmap gtj :CocCommand go.tags.add json<cr>
 autocmd FileType go nmap gty :CocCommand go.tags.add yaml<cr>
 autocmd FileType go nmap gtx :CocCommand go.tags.clear<cr>
-
 " Use `[g` and `]g` to navigate diagnostics
 " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
@@ -335,16 +347,26 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " Remap for do action format
 nnoremap <silent> F :call CocAction('format')<CR>
+" Add `:Format` command to format current buffer.
+command! -nargs=0 Format :call CocActionAsync('format')
+
+" Add `:Fold` command to fold current buffer.
+command! -nargs=? Fold :call CocAction('fold', <f-args>)
+
+" Add `:OR` command for organize imports of the current buffer.
+command! -nargs=0 OR :silent call CocAction('runCommand', 'editor.action.organizeImport')
+
+" Organize imports on save
+autocmd BufWritePre *.go :silent call CocAction('runCommand', 'editor.action.organizeImport')
 
 " Remap <C-f> and <C-b> for scroll float windows/popups.
-if has('nvim-0.4.0') || has('patch-8.2.0750')
-  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
-  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-endif
+" nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+" nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+" inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+" inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+" vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+" vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+"
 
 " Mappings for CoCList
 " Show all diagnostics.
@@ -367,9 +389,6 @@ nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 " Apply AutoFix to problem on the current line.
 nmap <leader>qf  <Plug>(coc-fix-current)
 
-" Organize imports on save
-autocmd BufWritePre *.go :silent call CocAction('runCommand', 'editor.action.organizeImport')
-
 " Formatting selected code.
 xmap <leader>f  <Plug>(coc-format-selected)
 nmap <leader>f  <Plug>(coc-format-selected)
@@ -384,27 +403,27 @@ nmap <leader>rn <Plug>(coc-rename)
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
 function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  elseif (coc#rpc#ready())
-    call CocActionAsync('doHover')
-  else
-    execute '!' . &keywordprg . " " . expand('<cword>')
-  endif
+   if (index(['vim','help'], &filetype) >= 0)
+      execute 'h '.expand('<cword>')
+   elseif (coc#rpc#ready())
+      call CocActionAsync('doHover')
+   else
+      execute '!' . &keywordprg . " " . expand('<cword>')
+   endif
 endfunction
 
 " Use tab for trigger completion with characters ahead and navigate.
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
 " other plugin before putting this into your config.
 inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
+         \ pumvisible() ? "\<C-n>" :
+         \ <SID>check_back_space() ? "\<TAB>" :
+         \ coc#refresh()
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
+   let col = col('.') - 1
+   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
 " Use <c-space> to trigger completion.
@@ -414,22 +433,26 @@ inoremap <silent><expr> <c-space> coc#refresh()
 " position. Coc only does snippet and additional edit on confirm.
 " <cr> could be remapped by other vim plugin, try `:verbose imap <CR>`.
 if exists('*complete_info')
-  inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+   inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
 else
-  inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+   inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 endif
 " }}}
 
 " Plug 'norcalli/nvim-colorizer.lua'
 
-" nerdtree {{{
+" PRODUCTIVITY ------------------------------------------ {{{
+" Plug 'wakatime/vim-wakatime'
+" Plug 'github/copilot.vim'
+" }}}
+
+" nerdtree ---------------------------------------------- {{{
 Plug 'preservim/nerdtree'
 
 " mapping
 map <C-n> :NERDTreeToggle<CR>
 
-" Mirror the NERDTree before showing it. This makes it the same on all tabs.
-nnoremap <C-n> :NERDTreeMirror<CR>:NERDTreeFocus<CR>
+nnoremap <leader>n :NERDTreeFocus<CR>
 
 let NERDTreeHijackNetrw=1
 let NERDTreeMinimalUI = 1
@@ -468,7 +491,7 @@ autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTr
 " Start NERDTree when Vim starts with a directory argument.
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') |
-    \ execute 'NERDTree' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | endif
+         \ execute 'NERDTree' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | endif
 
 " " If no file specified open nerdtree
 " autocmd StdinReadPre * let s:std_in=1
@@ -479,9 +502,10 @@ autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") && v:this_session == "" | NERDTree | endif
 
 " NERDTress File highlighting
+" NERDTress File highlighting
 function! NERDTreeHighlightFile(extension, fg, bg, guifg, guibg)
- exec 'autocmd filetype nerdtree highlight ' . a:extension .' ctermbg='. a:bg .' ctermfg='. a:fg .' guibg='. a:guibg .' guifg='. a:guifg
- exec 'autocmd filetype nerdtree syn match ' . a:extension .' #^\s\+.*'. a:extension .'$#'
+ exec 'autocmd FileType nerdtree highlight ' . a:extension .' ctermbg='. a:bg .' ctermfg='. a:fg .' guibg='. a:guibg .' guifg='. a:guifg
+ exec 'autocmd FileType nerdtree syn match ' . a:extension .' #^\s\+.*'. a:extension .'$#'
 endfunction
 
 call NERDTreeHighlightFile('jade', 'green', 'none', 'green', '#151515')
@@ -498,17 +522,22 @@ call NERDTreeHighlightFile('coffee', 'Red', 'none', 'red', '#151515')
 call NERDTreeHighlightFile('js', 'Red', 'none', '#ffa500', '#151515')
 call NERDTreeHighlightFile('php', 'Magenta', 'none', '#ff00ff', '#151515')
 call NERDTreeHighlightFile('tf', '30', 'none', '255', '#151515')
-
+call NERDTreeHighlightFile('go', 'blue', 'none', '#3366FF', '#151515')
+call NERDTreeHighlightFile('gitignore', 'Gray', 'none', '#686868', '#151515')
 " }}}
 
-"nerdtree-git-plugin {{{
+"nerdtree-git-plugin ------------------------------------ {{{
 Plug 'Xuyuanp/nerdtree-git-plugin'
-" let g:NERDTreeGitStatusShowIgnored = 1
-
+let g:NERDTreeGitStatusShowIgnored = 1
+let g:NERDTreeGitStatusUseNerdFonts = 1
 " cmap git Git
 " }}}
 
-" fzf {{{
+" coc-markdown-preview-enhanced ------------------------- {{{
+cabbrev markdownpreview 'CocCommand markdown-preview-enhanced.openPreview'
+" }}}
+
+" fzf --------------------------------------------------- {{{
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 
@@ -527,22 +556,19 @@ let g:fzf_commits_log_options = '--graph --color=always --format="%C(auto)%h%d %
 " [Commands] --expect expression for directly executing the command
 let g:fzf_commands_expect = 'alt-enter,ctrl-x'
 
-" fzf
 nnoremap <c-p> :Files<CR>
 nnoremap <leader>f :Ag<CR>
 
 let g:fzf_action = {
-  \ 'return': 'tab split',
-  \ 'ctrl-j': 'split',
-  \ 'ctrl-k': 'vsplit' }
+         \ 'return': 'tab split',
+         \ 'ctrl-j': 'split',
+         \ 'ctrl-k': 'vsplit' }
 " }}}
 
 " Plug 'rking/ag.vim'
 " Plug 'mileszs/ack.vim'
 
-Plug 'dense-analysis/ale'
-
-" git {{{
+" git --------------------------------------------------- {{{
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 
@@ -556,77 +582,114 @@ nmap <silent><leader>gb :Git blame<cr>
 nmap <silent><leader>g :Git<cr>
 " }}}
 
-" markdown {{{
-Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
-
-" set to 1, nvim will open the preview window after entering the markdown buffer
-" default: 0
-let g:mkdp_auto_start = 0
-
-" set to 1, the nvim will auto close current preview window when change
-" from markdown buffer to another buffer
-" default: 1
-let g:mkdp_auto_close = 0
-
-" set to 1, the vim will refresh markdown when save the buffer or
-" leave from insert mode, default 0 is auto refresh markdown as you edit or
-" move the cursor
-" default: 0
-let g:mkdp_refresh_slow = 0
-
-" set to 1, the MarkdownPreview command can be use for all files,
-" by default it can be use in markdown file
-" default: 0
-let g:mkdp_command_for_global = 0
-
-" specify browser to open preview page
-" default: 'Google Chrome'
-let g:mkdp_browser = 'Brave Browser'
-
-let g:mkdp_preview_options = {
-    \ 'mkit': {},
-    \ 'katex': {},
-    \ 'uml': {},
-    \ 'maid': {},
-    \ 'disable_sync_scroll': 0,
-    \ 'sync_scroll_type': 'middle',
-    \ 'hide_yaml_meta': 1,
-    \ 'sequence_diagrams': {},
-    \ 'flowchart_diagrams': {},
-    \ 'content_editable': v:false
-    \ }
-
-" preview page title
-" ${name} will be replace with the file name
-let g:mkdp_page_title = '「${name}」'
-" }}}
+" " markdown {{{
+" Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 "
-" Terraform {{{
+" " set to 1, nvim will open the preview window after entering the markdown buffer
+" " default: 0
+" let g:mkdp_auto_start = 0
+"
+" " set to 1, the nvim will auto close current preview window when change
+" " from markdown buffer to another buffer
+" " default: 1
+" let g:mkdp_auto_close = 0
+"
+" " set to 1, the vim will refresh markdown when save the buffer or
+" " leave from insert mode, default 0 is auto refresh markdown as you edit or
+" " move the cursor
+" " default: 0
+" let g:mkdp_refresh_slow = 0
+"
+" " set to 1, the MarkdownPreview command can be use for all files,
+" " by default it can be use in markdown file
+" " default: 0
+" let g:mkdp_command_for_global = 0
+"
+" " specify browser to open preview page
+" " default: 'Google Chrome'
+" " let g:mkdp_browser = ''
+"
+" " let g:mkdp_browser = "/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome"
+"
+" let g:mkdp_preview_options = {
+"     \ 'mkit': {},
+"     \ 'katex': {},
+"     \ 'uml': {},
+"     \ 'maid': {},
+"     \ 'disable_sync_scroll': 0,
+"     \ 'sync_scroll_type': 'middle',
+"     \ 'hide_yaml_meta': 1,
+"     \ 'sequence_diagrams': {},
+"     \ 'flowchart_diagrams': {},
+"     \ 'content_editable': v:false
+"     \ }
+"
+" " preview page title
+" " ${name} will be replace with the file name
+" let g:mkdp_page_title = '「${name}」'
+" " }}}
+
+" Terraform --------------------------------------------- {{{
 Plug 'hashivim/vim-terraform'
 let g:terraform_align=1
 let g:terraform_fmt_on_save=1
 " }}}
 
+" dense-analysis/ale ------------------------------------ {{{
+Plug 'dense-analysis/ale'
+
+let g:ale_completion_enabled = 1
+let g:ale_linters_explicit = 1
+" Set this variable to 1 to fix files when you save them.
+let g:ale_fix_on_save = 1
+let g:ale_linters = {
+         \ 'go': ["golint"],
+         \ 'php': ['phpstan'],
+         \ 'javascript': ['eslint']
+         \ }
+let g:ale_fixers = {
+         \ 'go': ["gofmt", "goimports"],
+         \ 'javascript': ['prettier', 'eslint'],
+         \ '*': ['remove_trailing_lines', 'trim_whitespace'],
+         \ }
+" }}}
+
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+let g:NERDTreeFileExtensionHighlightFullName = 1
+let g:NERDTreeExactMatchHighlightFullName = 1
+let g:NERDTreePatternMatchHighlightFullName = 1
 Plug 'powerline/fonts'
+
+" ryanoasis/vim-devicons ------------------------------- {{{
 Plug 'ryanoasis/vim-devicons'
+
+let g:WebDevIconsUnicodeDecorateFileNodesDefaultSymbol='x'
+autocmd BufNewFile,BufRead *.v,*.vs set syntax=verilog
+"get rid of [  ] around icons in NerdTree
+syntax enable
+if exists("g:loaded_webdevicons")
+   call webdevicons#refresh()
+endif
+" }}}
+
 Plug 'vim-utils/vim-man'
+" Plug 'tpope/vim-surround'
 " Plug 'dkprice/vim-easygrep'
 
 " highlight conflicts
 match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 
-function! TrimWhiteSpace()
-   %s/\s\+$//e
-endfunction
-autocmd BufWritePre * :call TrimWhiteSpace()
+" function! TrimWhiteSpace()
+"    %s/\s\+$//e
+" endfunction
+" autocmd BufWritePre * :call TrimWhiteSpace()
 
 augroup BWCCreateDir
    autocmd!
    autocmd BufWritePre * if expand("<afile>")!~#'^\w\+:/'
-      \ && !isdirectory(expand("%:h"))
-      \ | execute "silent! !mkdir -p ".shellescape(expand('%:h'), 1)
-      \ | redraw! | endif
+            \ && !isdirectory(expand("%:h"))
+            \ | execute "silent! !mkdir -p ".shellescape(expand('%:h'), 1)
+            \ | redraw! | endif
 augroup END
 
 " close all [No Name] files
@@ -641,6 +704,15 @@ endfunction
 
 " Close [No Name] tabs
 nnoremap <silent> ,C :call CleanNoNameEmptyBuffers()<CR>
+
+" VIMSCRIPT -------------------------------------------------------------- {{{
+" " This will enable code folding.
+" Use the marker method of folding.
+augroup filetype_vim
+   autocmd!
+   autocmd FileType vim setlocal foldmethod=marker
+augroup END
+" }}}
 
 call plug#end()
 " }}} vim-plug
