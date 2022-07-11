@@ -664,7 +664,7 @@ Plug 'powerline/fonts'
 Plug 'ryanoasis/vim-devicons'
 
 let g:WebDevIconsUnicodeDecorateFileNodesDefaultSymbol='x'
-autocmd BufNewFile,BufRead *.v,*.vs set syntax=verilog
+" autocmd BufNewFile,BufRead *.v,*.vs set syntax=verilog
 "get rid of [  ] around icons in NerdTree
 syntax enable
 if exists("g:loaded_webdevicons")
