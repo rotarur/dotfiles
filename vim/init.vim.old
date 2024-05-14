@@ -4,6 +4,8 @@
 " <c-p> = Control + p
 " <leader>n - enable nohighlight
 " jj - in edit mode works like Escape
+" ysiw" - surround the word
+" yss) - surround the whole line
 " Folding:
 " zo - open a single fold under the cursor
 " zc - close the fold under the cursor
@@ -29,9 +31,11 @@ syntax on " Syntax highlighting
 " }}}
 
 " remove trailing spaces and null lines on write -------- {{{
-autocmd BufWritePre * :%s/\s\+$//e
-autocmd BufWritePre * :retab
+" autocmd BufWritePre * :%s/\s\+$//e
+" autocmd BufWritePre * :retab
 " }}}
+
+" let g:python3_host_prog = '/opt/homebrew/bin/python3'
 
 " ENCODING ---------------------------------------------- {{{
 set encoding=utf-8  " The encoding displayed.
@@ -52,20 +56,41 @@ set expandtab
 " copy indent from the previous line
 set copyindent
 " round indent to a multiple of 'shiftwidth'
-set shiftround
+" set shiftround
 " }}}
 
-" TABS -------------------------------------------------- {{{
+" TABS && MOTIONS --------------------------------------- {{{
 " use Shift H or Shift L to change tabs
 nnoremap H gT
 nnoremap L gt
-" auto indent between brackets
+" " auto indent between brackets
 inoremap ( ()<Esc>:let leavechar=")"<CR>i
 inoremap { {}<Esc>:let leavechar="}"<CR>i
 inoremap [ []<Esc>:let leavechar="]"<CR>i
-imap <C-j> <Esc>:exec "normal f" . leavechar<CR>a
+inoremap <expr> ) strpart(getline('.'), col('.')-1, 1) == ")" ? "\<Right>" : ")"
+inoremap <expr> } strpart(getline('.'), col('.')-1, 1) == "}" ? "\<Right>" : "}"
+inoremap <expr> ] strpart(getline('.'), col('.')-1, 1) == "]" ? "\<Right>" : "]"
+inoremap <expr> ' strpart(getline('.'), col('.')-1, 1) == "'" ? "\<Right>" : "''<left>"
+inoremap <expr> " strpart(getline('.'), col('.')-1, 1) == "\"" ? "\<Right>" : "\"\"<left>"
+" imap <C-j> <Esc>:exec "normal f" . leavechar<CR>a
+
+" inoremap ( ()<left>
+" inoremap { {}<left>
+" inoremap [ []<left>
+" inoremap " ""<left>
+" inoremap ' ''<left>
+inoremap {} <CR>{<CR>}<Up><CR>
 
 nnoremap tt :tabnew<CR>
+
+" nnoremap <leader>v vg_
+
+" Move down file lines
+noremap J 5j
+vnoremap J 5j
+" " Move up file lines
+" noremap K 5k
+" vnoremap K 5k
 " }}}
 
 set backspace=indent,eol,start " make backspace behave in a sane manner
@@ -73,7 +98,6 @@ set backspace=indent,eol,start " make backspace behave in a sane manner
 " CLIPBOARD --------------------------------------------- {{{
 set clipboard+=unnamedplus
 " }}}
-
 " UI CONFIG --------------------------------------------- {{{
 set wrap
 set wrapmargin=8 " wrap lines when coming within n characters from side
@@ -130,6 +154,11 @@ autocmd FileType yml setlocal shiftwidth=2 softtabstop=2 expandtab
 autocmd FileType tf setlocal shiftwidth=2 softtabstop=2 expandtab
 autocmd FileType json setlocal shiftwidth=3 softtabstop=3 expandtab
 autocmd FileType dockerfile setlocal shiftwidth=1 softtabstop=1 expandtab
+
+" " autocmd BufNewFile,BufRead *.jsonnet setf jsonnet
+" autocmd FileType jsonnet setlocal shiftwidth=2 softtabstop=2 expandtab
+" " autocmd BufNewFile,BufRead *.libsonnet setf libsonnet
+" autocmd FileType libsonnet setlocal shiftwidth=2 softtabstop=2 expandtab
 " }}}
 
 " SPLIT ------------------------------------------------- {{{
@@ -181,14 +210,13 @@ nmap <leader>x :x<CR>
 nmap <leader>q :q<CR>
 
 inoremap jj <esc>
-" unmap J
 " }}}
 
 " NORMAL MODE ------------------------------------------- {{{
 " Press \\ to jump back to the last cursor position.
 nnoremap <leader>\ ``
 " Press the space bar to type the : character in command mode.
-nnoremap <space> :
+" nnoremap <space> :
 " }}}
 
 " edit ~/.config/nvim/init.vim
@@ -263,13 +291,13 @@ let g:indentLine_char_list = ['|', '¦', '┆', '┊']
 " }}}
 
 " UltiSnips --------------------------------------------- {{{
-Plug 'SirVer/ultisnips' " Snippets plugin
+" Plug 'SirVer/ultisnips' " Snippets plugin
 " Snippets are separated from the engine. Add this if you want them:
-Plug 'honza/vim-snippets'
+" Plug 'honza/vim-snippets'
 
-let g:UltiSnipsExpandTrigger="<C-l>"
-let g:UltiSnipsJumpForwardTrigger="<C-j>"
-let g:UltiSnipsJumpBackwardTrigger="<C-k>"
+" let g:UltiSnipsExpandTrigger="<C-l>"
+" let g:UltiSnipsJumpForwardTrigger="<C-j>"
+" let g:UltiSnipsJumpBackwardTrigger="<C-k>"
 " }}}
 
 " tpope/vim-pathogen ------------------------------------ {{{
@@ -300,19 +328,25 @@ let g:UltiSnipsJumpBackwardTrigger="<C-k>"
 " let g:go_highlight_generate_tags = 1
 " }}}
 
+" jiangmiao/auto-pairs ---------------------------------- {{{
+" Plug 'jiangmiao/auto-pairs'
+" }}}
+" nvim-treesitter/nvim-treesitter ----------------------- {{{
+" Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+" }}}
 " coc --------------------------------------------------- {{{
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
+" \ 'coc-vimlsp',
+" \ 'coc-tsserver',
 let g:coc_global_extensions = [
          \ 'coc-css',
          \ 'coc-json',
-         \ 'coc-tsserver',
          \ 'coc-eslint',
          \ 'coc-tslint-plugin',
          \ 'coc-pairs',
          \ 'coc-git',
          \ 'coc-sh',
-         \ 'coc-vimlsp',
          \ 'coc-emmet',
          \ 'coc-ultisnips',
          \ 'coc-diagnostic',
@@ -322,7 +356,7 @@ let g:coc_global_extensions = [
          \ 'coc-python',
          \ 'coc-markdown-preview-enhanced',
          \ 'coc-webview',
-         \ 'coc-rls'
+         \ 'coc-rust-analyzer'
          \ ]
 
 autocmd FileType go nmap gtj :CocCommand go.tags.add json<cr>
@@ -400,15 +434,13 @@ nmap <leader>qf  <Plug>(coc-fix-current)
 nmap <leader>rn <Plug>(coc-rename)
 
 " Use K to show documentation in preview window.
-nnoremap <silent> K :call <SID>show_documentation()<CR>
+nnoremap <silent> K :call <SID>ShowDocumentation()<CR>
 
-function! s:show_documentation()
-   if (index(['vim','help'], &filetype) >= 0)
-      execute 'h '.expand('<cword>')
-   elseif (coc#rpc#ready())
+function! s:ShowDocumentation()
+   if CocAction('hasProvider', 'hover')
       call CocActionAsync('doHover')
    else
-      execute '!' . &keywordprg . " " . expand('<cword>')
+      call feedkeys('K', 'in')
    endif
 endfunction
 
@@ -416,27 +448,34 @@ endfunction
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
 " other plugin before putting this into your config.
 inoremap <silent><expr> <TAB>
-         \ pumvisible() ? "\<C-n>" :
-         \ <SID>check_back_space() ? "\<TAB>" :
+         \ coc#pum#visible() ? coc#pum#next(1):
+         \ CheckBackspace() ? "\<Tab>" :
          \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 
-function! s:check_back_space() abort
+function! CheckBackspace() abort
    let col = col('.') - 1
    return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
 " Use <c-space> to trigger completion.
-inoremap <silent><expr> <c-space> coc#refresh()
+if has('nvim')
+   inoremap <silent><expr> <c-space> coc#refresh()
+else
+   inoremap <silent><expr> <c-@> coc#refresh()
+endif
 
-" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
-" position. Coc only does snippet and additional edit on confirm.
-" <cr> could be remapped by other vim plugin, try `:verbose imap <CR>`.
 if exists('*complete_info')
    inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
 else
    inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 endif
+
+" Make <CR> to accept selected completion item or notify coc.nvim to format
+" <C-g>u breaks current undo, please make your own choice.
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+         \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
 " }}}
 
 " Plug 'norcalli/nvim-colorizer.lua'
@@ -463,7 +502,7 @@ let NERDTreeAutoDeleteBuffer = 1
 let NERDTreeShowHidden=1
 let NERDTreeIgnore = ['\.pyc$', '__pycache__']
 
-let g:nerdtree_tabs_open_on_gui_startup = 1
+" let g:nerdtree_tabs_open_on_gui_startup = 1
 let g:nerdtree_tabs_autofind = 1
 
 " custom highlight colors
@@ -484,14 +523,20 @@ set switchbuf=useopen,usetab
 " Exit Vim if NERDTree is the only window remaining in the only tab.
 autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
 
+" " Close the tab if NERDTree is the only window remaining in it.
+" autocmd BufEnter * if winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
+
+" Open the existing NERDTree on each new tab.
+" autocmd BufWinEnter * if getcmdwintype() == '' | silent NERDTreeMirror | endif
+
 " " Open nerdtree when vim starts up on opening a directory
 " autocmd StdinReadPre * let s:std_in=1
 " autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | exe 'cd '.argv()[0] | endif
 
 " Start NERDTree when Vim starts with a directory argument.
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') |
-         \ execute 'NERDTree' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | endif
+" autocmd StdinReadPre * let s:std_in=1
+" autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') |
+"          \ execute 'NERDTree' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | endif
 
 " " If no file specified open nerdtree
 " autocmd StdinReadPre * let s:std_in=1
@@ -502,10 +547,9 @@ autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") && v:this_session == "" | NERDTree | endif
 
 " NERDTress File highlighting
-" NERDTress File highlighting
 function! NERDTreeHighlightFile(extension, fg, bg, guifg, guibg)
- exec 'autocmd FileType nerdtree highlight ' . a:extension .' ctermbg='. a:bg .' ctermfg='. a:fg .' guibg='. a:guibg .' guifg='. a:guifg
- exec 'autocmd FileType nerdtree syn match ' . a:extension .' #^\s\+.*'. a:extension .'$#'
+   exec 'autocmd FileType nerdtree highlight ' . a:extension .' ctermbg='. a:bg .' ctermfg='. a:fg .' guibg='. a:guibg .' guifg='. a:guifg
+   exec 'autocmd FileType nerdtree syn match ' . a:extension .' #^\s\+.*'. a:extension .'$#'
 endfunction
 
 call NERDTreeHighlightFile('jade', 'green', 'none', 'green', '#151515')
@@ -523,15 +567,15 @@ call NERDTreeHighlightFile('js', 'Red', 'none', '#ffa500', '#151515')
 call NERDTreeHighlightFile('php', 'Magenta', 'none', '#ff00ff', '#151515')
 call NERDTreeHighlightFile('tf', '30', 'none', '255', '#151515')
 call NERDTreeHighlightFile('go', 'blue', 'none', '#3366FF', '#151515')
-call NERDTreeHighlightFile('gitignore', 'Gray', 'none', '#686868', '#151515')
+" call NERDTreeHighlightFile('gitignore', 'Gray', 'none', '#686868', '#151515')
 " }}}
 
-"nerdtree-git-plugin ------------------------------------ {{{
-Plug 'Xuyuanp/nerdtree-git-plugin'
-let g:NERDTreeGitStatusShowIgnored = 1
-let g:NERDTreeGitStatusUseNerdFonts = 1
-" cmap git Git
-" }}}
+" "nerdtree-git-plugin ------------------------------------ {{{
+" Plug 'Xuyuanp/nerdtree-git-plugin'
+" let g:NERDTreeGitStatusShowIgnored = 1
+" let g:NERDTreeGitStatusUseNerdFonts = 1
+" " cmap git Git
+" " }}}
 
 " coc-markdown-preview-enhanced ------------------------- {{{
 cabbrev markdownpreview 'CocCommand markdown-preview-enhanced.openPreview'
@@ -556,7 +600,17 @@ let g:fzf_commits_log_options = '--graph --color=always --format="%C(auto)%h%d %
 " [Commands] --expect expression for directly executing the command
 let g:fzf_commands_expect = 'alt-enter,ctrl-x'
 
-nnoremap <c-p> :Files<CR>
+function! FZFOpen(command_str)
+   if (expand('%') =~# 'NERD_tree' && winnr('$') > 1)
+      exe "normal! \<c-w>\<c-w>"
+      " exec ":NERDTreeToggle"
+   endif
+   exe 'normal! ' . a:command_str . "\<cr>"
+   " exec ":NERDTreeToggle"
+endfunction
+
+" nnoremap <c-p> :Files<CR>
+nnoremap <silent> <C-p> :call FZFOpen(':Files')<CR>
 nnoremap <leader>f :Ag<CR>
 
 let g:fzf_action = {
@@ -583,50 +637,50 @@ nmap <silent><leader>g :Git<cr>
 " }}}
 
 " " markdown {{{
-" Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
-"
-" " set to 1, nvim will open the preview window after entering the markdown buffer
-" " default: 0
-" let g:mkdp_auto_start = 0
-"
-" " set to 1, the nvim will auto close current preview window when change
-" " from markdown buffer to another buffer
-" " default: 1
-" let g:mkdp_auto_close = 0
-"
-" " set to 1, the vim will refresh markdown when save the buffer or
-" " leave from insert mode, default 0 is auto refresh markdown as you edit or
-" " move the cursor
-" " default: 0
-" let g:mkdp_refresh_slow = 0
-"
-" " set to 1, the MarkdownPreview command can be use for all files,
-" " by default it can be use in markdown file
-" " default: 0
-" let g:mkdp_command_for_global = 0
-"
-" " specify browser to open preview page
-" " default: 'Google Chrome'
-" " let g:mkdp_browser = ''
-"
-" " let g:mkdp_browser = "/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome"
-"
-" let g:mkdp_preview_options = {
-"     \ 'mkit': {},
-"     \ 'katex': {},
-"     \ 'uml': {},
-"     \ 'maid': {},
-"     \ 'disable_sync_scroll': 0,
-"     \ 'sync_scroll_type': 'middle',
-"     \ 'hide_yaml_meta': 1,
-"     \ 'sequence_diagrams': {},
-"     \ 'flowchart_diagrams': {},
-"     \ 'content_editable': v:false
-"     \ }
-"
-" " preview page title
-" " ${name} will be replace with the file name
-" let g:mkdp_page_title = '「${name}」'
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+
+" set to 1, nvim will open the preview window after entering the markdown buffer
+" default: 0
+let g:mkdp_auto_start = 0
+
+" set to 1, the nvim will auto close current preview window when change
+" from markdown buffer to another buffer
+" default: 1
+let g:mkdp_auto_close = 0
+
+" set to 1, the vim will refresh markdown when save the buffer or
+" leave from insert mode, default 0 is auto refresh markdown as you edit or
+" move the cursor
+" default: 0
+let g:mkdp_refresh_slow = 0
+
+" set to 1, the MarkdownPreview command can be use for all files,
+" by default it can be use in markdown file
+" default: 0
+let g:mkdp_command_for_global = 0
+
+" specify browser to open preview page
+" default: 'Google Chrome'
+" let g:mkdp_browser = ''
+
+let g:mkdp_browser = "/Applications/Brave\ Browser.app/Contents/MacOS/Brave\ Browser"
+
+let g:mkdp_preview_options = {
+         \ 'mkit': {},
+         \ 'katex': {},
+         \ 'uml': {},
+         \ 'maid': {},
+         \ 'disable_sync_scroll': 0,
+         \ 'sync_scroll_type': 'middle',
+         \ 'hide_yaml_meta': 1,
+         \ 'sequence_diagrams': {},
+         \ 'flowchart_diagrams': {},
+         \ 'content_editable': v:false
+         \ }
+
+" preview page title
+" ${name} will be replace with the file name
+let g:mkdp_page_title = '「${name}」'
 " " }}}
 
 " Terraform --------------------------------------------- {{{
@@ -635,29 +689,31 @@ let g:terraform_align=1
 let g:terraform_fmt_on_save=1
 " }}}
 
-" dense-analysis/ale ------------------------------------ {{{
-Plug 'dense-analysis/ale'
-
-let g:ale_completion_enabled = 1
-let g:ale_linters_explicit = 1
-" Set this variable to 1 to fix files when you save them.
-let g:ale_fix_on_save = 1
-let g:ale_linters = {
-         \ 'go': ["golint"],
-         \ 'php': ['phpstan'],
-         \ 'javascript': ['eslint']
-         \ }
-let g:ale_fixers = {
-         \ 'go': ["gofmt", "goimports"],
-         \ 'javascript': ['prettier', 'eslint'],
-         \ '*': ['remove_trailing_lines', 'trim_whitespace'],
-         \ }
-" }}}
+" " dense-analysis/ale ------------------------------------ {{{
+" Plug 'dense-analysis/ale'
+"
+" let g:ale_completion_enabled = 1
+" let g:ale_linters_explicit = 1
+" " Set this variable to 1 to fix files when you save them.
+" let g:ale_fix_on_save = 1
+" let g:ale_linters = {
+"          \ 'rust': ['analyzer'],
+"          \ 'go': ["golint"],
+"          \ 'php': ['phpstan'],
+"          \ 'javascript': ['eslint']
+"          \ }
+" let g:ale_fixers = {
+"          \ 'go': ["gofmt", "goimports"],
+"          \ 'javascript': ['prettier', 'eslint'],
+"          \ '*': ['remove_trailing_lines', 'trim_whitespace'],
+"          \ }
+" " }}}
 
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 let g:NERDTreeFileExtensionHighlightFullName = 1
 let g:NERDTreeExactMatchHighlightFullName = 1
 let g:NERDTreePatternMatchHighlightFullName = 1
+
 Plug 'powerline/fonts'
 
 " ryanoasis/vim-devicons ------------------------------- {{{
@@ -672,8 +728,9 @@ if exists("g:loaded_webdevicons")
 endif
 " }}}
 
-Plug 'vim-utils/vim-man'
-" Plug 'tpope/vim-surround'
+" Plug 'vim-utils/vim-man'
+Plug 'tpope/vim-surround'
+Plug 'google/vim-jsonnet'
 " Plug 'dkprice/vim-easygrep'
 
 " highlight conflicts
