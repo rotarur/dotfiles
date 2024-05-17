@@ -17,7 +17,6 @@ return {
         'hrsh7th/cmp-path',
         'hrsh7th/cmp-cmdline',
         'hrsh7th/nvim-cmp',
-        'L3MON4D3/LuaSnip',
         { "L3MON4D3/LuaSnip", dependencies = { "rafamadriz/friendly-snippets" }, },
         'saadparwaiz1/cmp_luasnip',
     },
@@ -31,7 +30,8 @@ return {
             vim.lsp.protocol.make_client_capabilities(),
             cmp_lsp.default_capabilities())
 
-        local luasnip = require("luasnip.loaders.from_vscode").lazy_load()
+        local luasnip = require('luasnip')
+        require("luasnip.loaders.from_vscode").lazy_load()
         require("fidget").setup({})
         require("mason").setup()
         require("mason-lspconfig").setup({
