@@ -1,30 +1,34 @@
 # Remove duplicates from history
 setopt HIST_EXPIRE_DUPS_FIRST
-setopt HIST_IGNORE_DUPS
-setopt HIST_IGNORE_ALL_DUPS
-setopt HIST_IGNORE_SPACE
+setopt HIST_IGNORE_DUPS       # Do not record an event that was just recorded again.
+setopt HIST_IGNORE_ALL_DUPS   # Delete an old recorded event if a new event is a duplicate.
+setopt HIST_IGNORE_SPACE      # Do not record an event starting with a space.
 setopt HIST_FIND_NO_DUPS
-setopt HIST_SAVE_NO_DUPS
+setopt HIST_SAVE_NO_DUPS      # Do not write a duplicate event to the history file.
+setopt HIST_VERIFY            # Do not execute immediately upon history expansion.
+setopt INC_APPEND_HISTORY     # Write to the history file immediately, not when the shell exits.
+# setopt SHARE_HISTORY          # Share history between all sessions.
+setopt HIST_REDUCE_BLANKS     # Remove superfluous blanks from each command line being added to the history.
+
+WEZTERM_IN_TMUX=1
+
+HISTSIZE=10000000
+SAVEHIST=10000000
+HISTORY_IGNORE="(ls|cd|pwd|exit|cd)*"
 
 DISABLE_UNTRACKED_FILES_DIRTY="true"
 
-# zsh completion
-if type brew &>/dev/null; then
-    FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
-
-    autoload -Uz compinit
-    compinit
-fi
-
 # use nvim
-[[ -n "$(command -v nvim)" ]] && alias vim='nvim'; alias vi='nvim'
-[[ -n "$(command -v nvim)" ]] && export EDITOR='nvim'
-[[ -n "$(command -v nvim)" ]] && export GIT_EDITOR='nvim'
+[[ ! -z "$(command -v nvim)" ]] && alias vim='nvim'; alias vi='nvim'
+[[ ! -z "$(command -v nvim)" ]] && export EDITOR='vim'
+[[ ! -z "$(command -v nvim)" ]] && export GIT_EDITOR='vim'
 
 # fzf
-[[ -n "$(command -v fzf)" ]] && alias vfzf='vi $(fzf --height 40%)'
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[[ -f ~/.fzf.zsh ]] && source ~/.fzf.zsh
+[[ ! -z "$(command -v fzf)" ]] && alias fvi='vi $(fzf --height 40%)'
 
+alias watcha='watch -d -n 1 '
+alias zj='zellij options --theme gruvbox-dark'
 alias myip='curl ipinfo.io'
 
 alias rmf='rm -rf'
@@ -47,6 +51,13 @@ alias ghpc='gh pr create'
 alias ghpm='gh pr merge'
 alias ghpmdr='gh pr merge -d -r'
 
+# GNU
+[[ ! -z "$(command -v gsed)" ]] && alias sed=$(which gsed)
+
+# kitty aliases
+# if [ ! -z "$(command -v kitty)" ]; then
+#     alias diff="kitten diff"
+# fi
 # source custom configurations
 # these configurations are ignored when
 # committed
@@ -61,13 +72,22 @@ alias k-get-all-images="kubectl get pods --all-namespaces -o=jsonpath='{range .i
 alias kgc='k config get-contexts -o name'
 alias kcc='k config current-context'
 alias kuc='k config use-context'
+alias kd='k describe'
 alias kdn='k describe node'
+alias kdi='k describe ingress'
+alias kg='k get'
+alias kgp='k get pod'
+alias kgi='k get ingress'
+alias kgdp='k get deployment'
+alias kgds='k get daemonset'
+alias kgsvc='k get service'
+alias kgscrt='k get secret'
 
 # itialise completions with ZSH's compinit
 autoload -U +X compinit && compinit
 
 source <(kubectl completion zsh)
-complete -F __start_kubectl k
+# complete -F __start_kubectl k
 
 # aws
 alias assume-role='function(){
@@ -85,11 +105,14 @@ export PATH="$GOPATH/bin:$PATH"
 export PATH="$HOME/.asdf:$PATH"
 export PATH="${HOME}/Library/Python/2.7/bin:$PATH"
 export PATH="/usr/local/opt/libpq/bin:$PATH"
-export PATH="$(go env GOPATH)/bin:$PATH"
 export PATH="${HOME}/.local/share/solana/install/active_release/bin:$PATH"
+export PATH="/opt/homebrew/bin:$PATH"
 export PACKER_HOME_DIR=$HOME/.packer.d
 
-source $HOME/.vim/plugged/gruvbox/gruvbox_256palette.sh
+export XDG_CONFIG_HOME=$HOME/.config
+
+#source $HOME/.vim/plugged/gruvbox/gruvbox_256palette.sh
+source $HOME/.local/share/nvim/plugged/gruvbox/gruvbox_256palette.sh
 
 # reload zsh
 alias reload!='RELOAD=1 source ~/.zshrc'
@@ -98,11 +121,22 @@ alias reload!='RELOAD=1 source ~/.zshrc'
 alias gpg-restart='gpgconf --kill gpg-agent; gpgconf --launch gpg-agent'
 
 # GPG configuration
+if [ ! -d $HOME/.gnupg ]; then
+   mkdir $HOME/.gnupg
+fi
+
 export GPG_TTY=$(tty)
 gpgconf --launch gpg-agent
 echo -e "# Enable gpg to use the gpg-agent\nuse-agent" > ${HOME}/.gnupg/gpg.conf
 
 . $HOME/.asdf/asdf.sh
+
+# zoxide better cd
+eval "$(zoxide init zsh)"
+alias cd="z"
+
+export PATH="$(go env GOPATH)/bin:$PATH"
+eval "$(atuin init zsh)"
 
 # append completions to fpath
 #fpath=(${ASDF_DIR}/completions $fpath)
