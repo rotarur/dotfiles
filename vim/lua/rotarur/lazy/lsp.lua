@@ -19,6 +19,8 @@ return {
         'hrsh7th/nvim-cmp',
         { "L3MON4D3/LuaSnip", dependencies = { "rafamadriz/friendly-snippets" }, },
         'saadparwaiz1/cmp_luasnip',
+        'ziglang/zig.vim',
+        'ray-x/lsp_signature.nvim',
     },
 
     config = function()
@@ -37,8 +39,8 @@ return {
         require("mason-lspconfig").setup({
             ensure_installed = {
                 "lua_ls",
-                "rust_analyzer",
-                "gopls",
+                -- "rust_analyzer",
+                -- "gopls",
             },
             handlers = {
                 function(server_name) -- default handler (optional)
@@ -61,6 +63,12 @@ return {
                         }
                     }
                 end,
+            }
+        })
+        require 'lsp_signature'.setup({
+            bind = true, -- This is mandatory, otherwise border config won't get registered.
+            handler_opts = {
+                border = "rounded"
             }
         })
 
@@ -105,15 +113,15 @@ return {
             sources = cmp.config.sources({
                 { name = 'nvim_lsp' },
                 { name = 'luasnip' }, -- For luasnip users.
-            }, {
                 { name = 'buffer' },
+                { name = 'path' },
             })
         })
 
         vim.diagnostic.config({
-            -- update_in_insert = true,
+            update_in_insert = true,
             float = {
-                focusable = false,
+                focusable = true,
                 style = "minimal",
                 border = "rounded",
                 source = "always",

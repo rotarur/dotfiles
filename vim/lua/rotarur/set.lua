@@ -1,6 +1,6 @@
 vim.opt.guicursor = ''
 
-vim.opt.mouse = ''
+vim.opt.mouse = 'a'
 
 vim.opt.nu = true
 vim.opt.relativenumber = true
@@ -17,7 +17,7 @@ vim.opt.autoindent = true
 
 vim.opt.wrap = true
 
-vim.o.completeopt = 'menuone,noselect'
+vim.opt.completeopt = 'menu,menuone,noinsert,noselect,preview'
 
 vim.opt.swapfile = false
 vim.opt.backup = false
@@ -41,3 +41,7 @@ vim.opt.updatetime = 50
 vim.opt.wildmenu = true
 vim.opt.wildmode = 'longest:full,full'
 -- vim.opt.colorcolumn = "80"
+vim.g.vimspector_enable_mappings = 'HUMAN'
+vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
+
+vim.g.tmux_navigator_no_wrap = 1

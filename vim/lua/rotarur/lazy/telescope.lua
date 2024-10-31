@@ -1,7 +1,7 @@
 return {
     'nvim-telescope/telescope.nvim',
 
-    tag = '0.1.6',
+    tag = '0.1.8',
     dependencies = { 'nvim-lua/plenary.nvim' },
 
     config = function()
@@ -14,6 +14,7 @@ return {
                 -- the default case_mode is "smart_case"
             },
             defaults = {
+                wrap_results = true,
                 mappings = {
                     i = {
                         ['<C-u>'] = false,
@@ -31,6 +32,24 @@ return {
             --         theme = "dropdown",
             --         -- winblend = 20,
             --     }
+            -- },
+            -- pickers = {
+            --     diagnostics = {
+            --         previewer = require("telescope.previewers").new_buffer_previewer({
+            --             title = "Diagnostics",
+            --             dyn_title = function(_, entry)
+            --                 return entry.title
+            --             end,
+            --
+            --             get_buffer_by_name = function(_, entry)
+            --                 return "diagnostics_" .. tostring(entry.nr)
+            --             end,
+            --
+            --             define_preview = function(self, entry)
+            --                 vim.api.nvim_buf_set_lines(self.state.bufnr, 0, -1, false, { entry.text })
+            --             end,
+            --         }),
+            --     },
             -- },
         }
 
