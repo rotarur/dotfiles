@@ -12,7 +12,7 @@ ZSRCDOT=~/.dotfiles/zsh/zshrc.cfg
 
 PACKAGES="yarn docker.io docker-compose packer
    neovim silversearcher-ag gimp ansible
-   apt-transport-https curl whois fzf awscli
+   apt-transport-https curl whois
    terminator zsh containerd ruby-full python3-venv
    gnupg2 virtualbox keepassx python-setuptools
    default-jre python3-pip python python-dev evince
@@ -31,6 +31,10 @@ echo "Install pip requirements"
 sudo pip3 install -r python_packages.txt
 
 sudo apt -y install --no-install-recommends software-properties-common
+
+echo "Install fzf"
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+~/.fzf/install
 
 echo "Adding additional repositories"
 sudo add-apt-repository -y universe
