@@ -40,7 +40,7 @@ key-mapping.preset = 'qwerty'
 # See https://nikitabobko.github.io/AeroSpace/guide#on-focus-changed-callbacks
 # See https://nikitabobko.github.io/AeroSpace/commands#move-mouse
 # Fallback value (if you omit the key): on-focused-monitor-changed = []
-on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
+on-focused-monitor-changed = ['move-mouse window-lazy-center']
 on-focus-changed = ['move-mouse window-lazy-center'] # Mouse lazily follows any focus (window or workspace)
 
 # Gaps between windows (inner-*) and between monitor edges (outer-*).
@@ -110,9 +110,10 @@ run = ['layout tiling', 'move-node-to-workspace 3']
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#exec-and-forget
 # You can uncomment the following lines to open up terminal with alt + enter shortcut (like in i3)
-cmd-a = 'exec-and-forget alacritty'
-cmd-k = 'exec-and-forget kitty'
-alt-shift-f = "fullscreen"
+cmd-ctrl-a = 'exec-and-forget alacritty'
+cmd-ctrl-k = 'exec-and-forget kitty'
+cmd-ctrl-w = 'exec-and-forget wezterm'
+alt-ctrl-f = "fullscreen"
 # tell application "Terminal"
 #     do script
 #     activate
