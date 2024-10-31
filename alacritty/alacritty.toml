@@ -33,21 +33,21 @@ LC_ALL = "en_US.UTF-8"
 size = 18
 
 [font.bold]
-family = "Andale Mono"
+family = "FiraCode Nerd Font Mono"
 style = "Bold"
 
 [font.italic]
-family = "Andale Mono"
+family = "FiraCode Nerd Font Mono"
 style = "Italic"
 
 [font.normal]
-family = "Andale Mono"
+family = "FiraCode Nerd Font Mono"
 style = "Regular"
 
-[[keyboard.bindings]]
-chars = "#"
-key = "Key3"
-mods = "Alt"
+# [[keyboard.bindings]]
+# chars = "#"
+# key = "Key3"
+# mods = "Alt"
 
 [[keyboard.bindings]]
 action = "SpawnNewInstance"
@@ -104,9 +104,9 @@ multiplier = 3
 save_to_clipboard = false
 semantic_escape_chars = ",│`|:\"' ()[]{}<>"
 
-[shell]
-args = ["-l", "-c", "/opt/homebrew/bin/tmux attach || /opt/homebrew/bin/tmux"]
-program = "/bin/zsh"
+# [shell]
+# args = ["-l", "-c", "/opt/homebrew/bin/tmux attach || /opt/homebrew/bin/tmux new-session -A -s AlacT"]
+# program = "/bin/zsh"
 
 [window]
 decorations = "full"
