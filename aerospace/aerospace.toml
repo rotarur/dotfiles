@@ -60,6 +60,7 @@ outer.right =      0
 
 [workspace-to-monitor-force-assignment]
 B = ['LEN Y44w-10', '^built-in retina display$']
+P = ['LEN Y44w-10', '^built-in retina display$']
 T = ['LEN Y44w-10', '^built-in retina display$']
 
 [[on-window-detected]]
@@ -86,6 +87,10 @@ run = ['layout tiling', 'move-node-to-workspace 4']
 [[on-window-detected]]
 if.app-id = 'net.whatsapp.WhatsApp'
 run = ['layout tiling', 'move-node-to-workspace 3']
+
+[[on-window-detected]]
+if.app-id = 'com.github.wez.wezterm'
+run = ['layout tiling', 'move-node-to-workspace T']
 
 # 'main' binding mode declaration
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
@@ -161,7 +166,7 @@ alt-b = 'workspace B' # Browser
 # alt-m = 'workspace M'
 # alt-n = 'workspace N'
 # alt-o = 'workspace O'
-# alt-p = 'workspace P'
+alt-p = 'workspace P'
 # alt-q = 'workspace Q'
 # alt-r = 'workspace R'
 # alt-s = 'workspace S'
@@ -194,7 +199,7 @@ alt-shift-b = 'move-node-to-workspace B'
 # alt-shift-m = 'move-node-to-workspace M'
 # alt-shift-n = 'move-node-to-workspace N'
 # alt-shift-o = 'move-node-to-workspace O'
-# alt-shift-p = 'move-node-to-workspace P'
+alt-shift-p = 'move-node-to-workspace P'
 # alt-shift-q = 'move-node-to-workspace Q'
 # alt-shift-r = 'move-node-to-workspace R'
 # alt-shift-s = 'move-node-to-workspace S'
