@@ -2,7 +2,10 @@ return {
     'nvim-telescope/telescope.nvim',
 
     tag = '0.1.8',
-    dependencies = { 'nvim-lua/plenary.nvim' },
+    dependencies = {
+        'nvim-lua/plenary.nvim',
+        'debugloop/telescope-undo.nvim',
+    },
 
     config = function()
         require('telescope').setup {
@@ -26,6 +29,11 @@ return {
                 --     horizontal = { width = 0.5 },
                 --     -- other layout configuration here
                 -- },
+            },
+            extensions = {
+                undo = {
+                    -- telescope-undo.nvim config, see below
+                },
             },
             -- pickers = {
             --     find_files = {
@@ -53,6 +61,7 @@ return {
             -- },
         }
 
+        require("telescope").load_extension("undo")
         require('telescope').load_extension('fzf')
 
         -- Telescope
@@ -84,32 +93,24 @@ return {
                 grep_open_files = true,
                 prompt_title = 'Live Grep in Open Files',
             }
-        end, { desc = '[S]earch [/] in Open Files' })
+        end, { desc = '[/] in Open Files' })
 
+        vim.keymap.set("n", "<leader>su", "<cmd>Telescope undo<cr>",
+            { desc = '[U]ndo' }
+        )
         vim.keymap.set('n', '<leader>ss', require('telescope.builtin').builtin,
-            { desc = '[S]earch [S]elect Telescope' })
-        vim.keymap.set('n', '<leader>gf', require('telescope.builtin').git_files,
-            { desc = 'Search [G]it [F]iles' })
-        vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
-        vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
+            { desc = '[S]elect Telescope' })
+        vim.keymap.set('n', '<leader>sr', require('telescope.builtin').git_files,
+            { desc = '[F]iles in Git repository' })
+        vim.keymap.set('n', '<leader>gg', ':LiveGrepGitRoot<cr>', { desc = 'Using [G]rep on root' })
+        vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { desc = '[F]iles' })
+        vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[H]elp' })
         vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string,
-            { desc = '[S]earch current [W]ord' })
-        vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
-        vim.keymap.set('n', '<leader>sG', ':LiveGrepGitRoot<cr>', { desc = '[S]earch by [G]rep on Git Root' })
+            { desc = 'Current [W]ord' })
+        vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = 'Using [G]rep' })
         vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics,
-            { desc = '[S]earch [D]iagnostics' })
+            { desc = '[D]iagnostics' })
         -- vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = '[S]earch [R]esume' })
-
-        vim.keymap.set('n', '<leader>sr', function(opts)
-            opts = opts or {}
-            opts.cwd = vim.fn.systemlist("git rev-parse --show-toplevel")[1]
-            if vim.v.shell_error ~= 0 then
-                -- if not git then active lsp client root
-                -- will get the configured root directory of the first attached lsp. You will have problems if you are using multiple lsps
-                opts.cwd = vim.lsp.get_active_clients()[1].config.root_dir
-            end
-            require 'telescope.builtin'.find_files(opts)
-        end, { desc = '[S]earch Files from [R]oot' })
 
         -- live_grep in git root
         -- Function to find the git root directory based on the current buffer's path
