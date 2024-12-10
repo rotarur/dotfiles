@@ -1,47 +1,81 @@
-vim.opt.guicursor = ''
+local opt = vim.opt
+local o = vim.o
+local g = vim.g
 
-vim.opt.mouse = 'a'
+-------------------------------------- options ------------------------------------------
 
-vim.opt.nu = true
-vim.opt.relativenumber = true
+o.showmode = false
+o.laststatus = 3
 
-vim.opt.clipboard = 'unnamed'
+opt.guicursor = ''
 
-vim.opt.tabstop = 4
-vim.opt.softtabstop = 4
-vim.opt.shiftwidth = 4
-vim.opt.expandtab = true
+o.mouse = 'a'
 
-vim.opt.smartindent = true
-vim.opt.autoindent = true
+opt.nu = true
+opt.relativenumber = true
 
-vim.opt.wrap = true
+o.clipboard = 'unnamed'
+o.cursorline = true
+o.cursorlineopt = "number"
 
-vim.opt.completeopt = 'menu,menuone,noinsert,noselect,preview'
+-- Indentation
+o.tabstop = 2
+o.softtabstop = 2
+o.shiftwidth = 2
+o.expandtab = true
+o.smartindent = true
+o.autoindent = true
 
-vim.opt.swapfile = false
-vim.opt.backup = false
-vim.opt.undofile = true
-vim.opt.undodir = os.getenv("HOME") .. '/.config/nvim/undodir'
+-- Numbers
+o.number = true
+o.numberwidth = 2
+o.ruler = false
 
-vim.opt.hlsearch = false
-vim.opt.incsearch = true
+-- disable nvim intro
+opt.shortmess:append "sI"
 
-vim.opt.ignorecase = true
-vim.opt.smartcase = true
+opt.wrap = true
 
-vim.opt.termguicolors = true
+opt.completeopt = 'menu,menuone,noinsert,noselect,preview'
 
-vim.opt.scrolloff = 8
-vim.opt.signcolumn = 'yes'
-vim.opt.isfname:append("@-@")
+opt.swapfile = false
+opt.backup = false
+o.undofile = true
+o.undodir = os.getenv("HOME") .. '/.config/nvim/undodir'
 
-vim.opt.updatetime = 50
+opt.hlsearch = false
+opt.incsearch = true
 
-vim.opt.wildmenu = true
-vim.opt.wildmode = 'longest:full,full'
--- vim.opt.colorcolumn = "80"
-vim.g.vimspector_enable_mappings = 'HUMAN'
-vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
+o.ignorecase = true
+o.smartcase = true
 
-vim.g.tmux_navigator_no_wrap = 1
+opt.termguicolors = true
+
+o.signcolumn = 'yes'
+o.splitbelow = true
+o.splitright = true
+o.timeoutlen = 400
+
+opt.scrolloff = 8
+opt.isfname:append("@-@")
+
+-- interval for writing swap file to disk, also used by gitsigns
+o.updatetime = 250
+
+opt.wildmenu = true
+opt.wildmode = 'longest:full,full'
+-- opt.colorcolumn = "80"
+g.vimspector_enable_mappings = 'HUMAN'
+o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
+
+g.tmux_navigator_no_wrap = 1
+
+-- go to previous/next line with h,l,left arrow and right arrow
+-- when cursor reaches end/beginning of line
+opt.whichwrap:append "<>[]hl"
+
+-- disable some default providers
+g.loaded_node_provider = 0
+g.loaded_python3_provider = 0
+g.loaded_perl_provider = 0
+g.loaded_ruby_provider = 0
