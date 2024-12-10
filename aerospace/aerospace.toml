@@ -61,6 +61,7 @@ outer.right =      0
 [workspace-to-monitor-force-assignment]
 B = ['LEN Y44w-10', '^built-in retina display$']
 P = ['LEN Y44w-10', '^built-in retina display$']
+S = ['LEN Y44w-10', '^built-in retina display$']
 T = ['LEN Y44w-10', '^built-in retina display$']
 
 [[on-window-detected]]
@@ -91,6 +92,11 @@ run = ['layout tiling', 'move-node-to-workspace 3']
 [[on-window-detected]]
 if.app-id = 'com.github.wez.wezterm'
 run = ['layout tiling', 'move-node-to-workspace T']
+
+
+[[on-window-detected]]
+if.app-id = 'com.smartcodeltd.stremio'
+run = ['layout tiling', 'move-node-to-workspace S']
 
 # 'main' binding mode declaration
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
@@ -149,8 +155,8 @@ alt-shift-equal = 'resize smart +50'
 alt-1 = 'workspace 1' # Slack
 alt-2 = 'workspace 2' # Zoom
 alt-3 = 'workspace 3' # Telegram, Element and WhatsApp
-alt-4 = 'workspace 4'
-# alt-5 = 'workspace 5'
+alt-4 = 'workspace 4' # discord
+alt-5 = 'workspace 5'
 # alt-6 = 'workspace 6'
 # alt-7 = 'workspace 7'
 # alt-8 = 'workspace 8'
@@ -169,7 +175,7 @@ alt-b = 'workspace B' # Browser
 alt-p = 'workspace P'
 # alt-q = 'workspace Q'
 # alt-r = 'workspace R'
-# alt-s = 'workspace S'
+alt-s = 'workspace S' # stremio
 alt-t = 'workspace T' # Terminal
 # alt-u = 'workspace U'
 # alt-v = 'workspace V'
