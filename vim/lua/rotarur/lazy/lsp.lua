@@ -36,6 +36,7 @@ return {
         require("luasnip.loaders.from_vscode").lazy_load()
         require("fidget").setup({})
         require("mason").setup()
+        require 'lspconfig'.ts_ls.setup {}
         require("mason-lspconfig").setup({
             ensure_installed = {
                 "lua_ls",
@@ -194,5 +195,10 @@ return {
                 })
             end,
         })
-    end
+    end,
+    vim.keymap.set('n', '<leader>cd', '<cmd>lua vim.lsp.buf.definition()<cr>', { desc = 'Go to [d]efinition' }),
+    vim.keymap.set('n', '<leader>cD', '<cmd>lua vim.lsp.buf.declaration()<cr>', { desc = 'Go to [D]eclaration' }),
+    vim.keymap.set('n', '<leader>ci', '<cmd>lua vim.lsp.buf.implementation()<cr>', { desc = 'Go to [i]mplementation' }),
+    vim.keymap.set('n', '<leader>cl', '<cmd>lua vim.diagnostic.open_float()<cr>',
+        { desc = 'Open diagnostics f[l]oating window' }),
 }
