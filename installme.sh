@@ -90,37 +90,38 @@ git checkout "$(git describe --abbrev=0 --tags)"
 . $HOME/.asdf/asdf.sh
 
 echo "Install nodejs with asdf"
-asdf plugin-add nodejs
+asdf plugin-add nodejs && \
 asdf install nodejs latest && \
 asdf global nodejs latest
 
 echo "Install argocd with asdf"
-asdf plugin-add argocd https://github.com/beardix/asdf-argocd.git
-asdf install argocd latest &&\
+asdf plugin-add argocd https://github.com/beardix/asdf-argocd.git && \
+asdf install argocd latest && \
 asdf global argocd latest
 
 echo "Install helm with asdf"
-asdf plugin-add helm https://github.com/Antiarchitect/asdf-helm.git &&\
-asdf install helm latest &&\
+asdf plugin-add helm https://github.com/Antiarchitect/asdf-helm.git && \
+asdf install helm latest && \
 asdf global helm latest
 
 echo "Install kustomize with asdf"
-asdf plugin-add kustomize https://github.com/Banno/asdf-kustomize.git &&\
+asdf plugin-add kustomize https://github.com/Banno/asdf-kustomize.git && \
 asdf install kustomize latest &&\
 asdf global kustomize latest
 
+# install from gcp
 echo "Install awscli with asdf"
-asdf install awscli latest &&\
+asdf install awscli latest && \
 asdf global awscli latest
 
 echo "Install kubectl with asdf"
-asdf plugin-add kubectl https://github.com/asdf-community/asdf-kubectl.git &&\
-asdf install kubectl latest &&\
+asdf plugin-add kubectl https://github.com/asdf-community/asdf-kubectl.git && \
+asdf install kubectl latest && \
 asdf global kubectl latest
 
 echo "Install kubectx with asdf"
-asdf plugin add kubectx
-asdf install kubectx 0.8.0
+asdf plugin add kubectx && \
+asdf install kubectx 0.8.0 && \
 asdf global kubectx 0.8.0
 
 echo "Install minikube with asdf"
@@ -129,28 +130,31 @@ asdf install minikube latest &&\
 asdf global minikube latest
 
 echo "Install golang with asdf"
-asdf plugin-add golang https://github.com/kennyp/asdf-golang.git
+asdf plugin-add golang https://github.com/kennyp/asdf-golang.git && \
 asdf install golang latest && \
 asdf global golang latest
 
 echo "Install terraform with asdf"
-asdf plugin-add terraform https://github.com/asdf-community/asdf-hashicorp.git
+asdf plugin-add terraform https://github.com/asdf-community/asdf-hashicorp.git && \
 asdf install terraform latest && \
 asdf global terraform latest
 
 echo "Install sops with asdf"
-asdf plugin-add sops https://github.com/feniix/asdf-sops.git
+asdf plugin-add sops https://github.com/feniix/asdf-sops.git && \
 asdf install sops latest && \
 asdf global sops latest
 
-echo "Changing default shell"
-sudo usermod -s $ZSH $(whoami)
+asdf plugin-add lua https://github.com/Stratus3D/asdf-lua.git && \
+asdf install lua 5.1 && \
+asdf global lua 5.1
 
-echo "Adding to docker group"
-GROUP=$(grep docker /etc/group)
-if [ ${GROUP} ]; then
-   sudo usermod -aG docker $(whoami)
-fi
+asdf plugin-add rust https://github.com/code-lever/asdf-rust.git && \
+asdf install rust latest && \
+asdf global rust latest
+
+asdf plugin-add julia https://github.com/rkyleg/asdf-julia.git && \
+asdf install julia latest && \
+asdf global julia latest
 
 echo "Installing zsh plugins"
 git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
@@ -173,20 +177,7 @@ fi
 
 source ${ZSRCDOT}
 
-echo "Configuring vim"
-~/.dotfiles/vim/vim.install.sh
-
-echo "Installing alacritty"
-git clone https://github.com/alacritty/alacritty.git /var/tmp/alacritty
-cd /var/tmp/alacritty
-make app
-sudo cp cp -r target/release/osx/Alacritty.app /Applications/
-
-echo "Configuring alacritty"
-ln -s ~/.dotfiles/alacritty/alacritty.yml ~/.config/alacritty/
-
-git config --global push.default current
-git config --global pull.default current
+curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
 
 echo "Configuring sysctl"
 cat << EOF | sudo tee -a /etc/sysctl.conf
@@ -195,3 +186,4 @@ EOF
 sudo sysctl -p
 
 echo "Done."
+

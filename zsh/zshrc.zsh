@@ -106,13 +106,8 @@ export PATH="$HOME/.asdf:$PATH"
 export PATH="${HOME}/Library/Python/2.7/bin:$PATH"
 export PATH="/usr/local/opt/libpq/bin:$PATH"
 export PATH="${HOME}/.local/share/solana/install/active_release/bin:$PATH"
-export PATH="/opt/homebrew/bin:$PATH"
-export PACKER_HOME_DIR=$HOME/.packer.d
 
 export XDG_CONFIG_HOME=$HOME/.config
-
-#source $HOME/.vim/plugged/gruvbox/gruvbox_256palette.sh
-source $HOME/.local/share/nvim/plugged/gruvbox/gruvbox_256palette.sh
 
 # reload zsh
 alias reload!='RELOAD=1 source ~/.zshrc'
@@ -136,6 +131,8 @@ eval "$(zoxide init zsh)"
 alias cd="z"
 
 export PATH="$(go env GOPATH)/bin:$PATH"
+
+. "$HOME/.atuin/bin/env"
 eval "$(atuin init zsh)"
 
 # append completions to fpath
