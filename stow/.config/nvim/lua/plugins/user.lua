@@ -1,4 +1,4 @@
-if true then return {} end -- WARN: REMOVE THIS LINE TO ACTIVATE THIS FILE
+-- if true then return {} end -- WARN: REMOVE THIS LINE TO ACTIVATE THIS FILE
 
 -- You can also add or configure plugins by creating files in this `plugins/` folder
 -- Here are some examples:
@@ -22,18 +22,27 @@ return {
     "goolord/alpha-nvim",
     opts = function(_, opts)
       -- customize the dashboard header
-      opts.section.header.val = {
-        " █████  ███████ ████████ ██████   ██████",
-        "██   ██ ██         ██    ██   ██ ██    ██",
-        "███████ ███████    ██    ██████  ██    ██",
-        "██   ██      ██    ██    ██   ██ ██    ██",
-        "██   ██ ███████    ██    ██   ██  ██████",
-        " ",
-        "    ███    ██ ██    ██ ██ ███    ███",
-        "    ████   ██ ██    ██ ██ ████  ████",
-        "    ██ ██  ██ ██    ██ ██ ██ ████ ██",
-        "    ██  ██ ██  ██  ██  ██ ██  ██  ██",
-        "    ██   ████   ████   ██ ██      ██",
+      -- opts.section.header.val = {
+      --   " █████  ███████ ████████ ██████   ██████",
+      --   "██   ██ ██         ██    ██   ██ ██    ██",
+      --   "███████ ███████    ██    ██████  ██    ██",
+      --   "██   ██      ██    ██    ██   ██ ██    ██",
+      --   "██   ██ ███████    ██    ██   ██  ██████",
+      --   " ",
+      --   "    ███    ██ ██    ██ ██ ███    ███",
+      --   "    ████   ██ ██    ██ ██ ████  ████",
+      --   "    ██ ██  ██ ██    ██ ██ ██ ████ ██",
+      --   "    ██  ██ ██  ██  ██  ██ ██  ██  ██",
+      --   "    ██   ████   ████   ██ ██      ██",
+      -- }
+      local get_icon = require("astroui").get_icon
+      opts.section.buttons.val = {
+        opts.button("LDR n  ", get_icon("FileNew", 2, true) .. "New File  "),
+        opts.button("LDR s f", get_icon("Search", 2, true) .. "Find File  "),
+        opts.button("LDR s o", get_icon("DefaultFile", 2, true) .. "Recents  "),
+        opts.button("LDR s w", get_icon("WordFile", 2, true) .. "Find Word  "),
+        opts.button("LDR s '", get_icon("Bookmarks", 2, true) .. "Bookmarks  "),
+        opts.button("LDR S l", get_icon("Refresh", 2, true) .. "Last Session  "),
       }
       return opts
     end,
