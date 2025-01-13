@@ -41,6 +41,7 @@ return {
         "rust-analyzer",
         "typescript-language-server",
         "markdownlint",
+        "yaml-language-server",
       },
 
       -- if set to true this will check each tool for updates. If updates

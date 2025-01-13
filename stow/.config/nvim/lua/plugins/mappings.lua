@@ -102,6 +102,10 @@ return {
           end,
           desc = "Toggle Explorer Focus",
         },
+
+        -- shortcuts
+        ["L"] = { "<CMD>]b<CR>", desc = "Next tab" },
+        ["H"] = { "<CMD>[b<CR>", desc = "Previous tab" },
       },
     },
     -- -- add newline at EOF
@@ -142,11 +146,36 @@ return {
           end, -- command = [[if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif]],
         },
       },
+      autohidetabline = {
+        -- each augroup contains a list of auto commands
+        {
+          -- create a new autocmd on the "User" event
+          event = "User",
+          -- the pattern is the name of our User autocommand events
+          pattern = "AstroBufsUpdated", -- triggered when vim.t.bufs is updated
+          -- nice description
+          desc = "Hide tabline when only one buffer and one tab",
+          -- add the autocmd to the newly created augroup
+          group = "autohidetabline",
+          callback = function()
+            -- if there is more than one buffer in the tab, show the tabline
+            -- if there are 0 or 1 buffers in the tab, only show the tabline if there is more than one vim tab
+            local new_showtabline = #vim.t.bufs > 1 and 2 or 1
+            -- check if the new value is the same as the current value
+            if new_showtabline ~= vim.opt.showtabline:get() then
+              -- if it is different, then set the new `showtabline` value
+              vim.opt.showtabline = new_showtabline
+            end
+          end,
+        },
+      },
     },
     -- vim options can be configured here
     options = {
       opt = { -- vim.opt.<key>
         wrap = true, -- sets vim.opt.wrap
+        swapfile = false,
+        backup = false,
         -- go to previous/next line with h,l,left arrow and right arrow
         -- when cursor reaches end/beginning of line
         whichwrap = "<>[]hl",
@@ -205,15 +234,16 @@ return {
     --     },
     --   },
     --   -- configure AstroNvim features
-    --   features = {
-    --     autopairs = true, -- enable or disable autopairs on start
-    --     cmp = true, -- enable or disable cmp on start
-    --     diagnostics_mode = 3, -- diagnostic mode on start (0 = off, 1 = no signs/virtual text, 2 = no virtual text, 3 = off)
-    --     highlighturl = true, -- enable or disable highlighting of urls on start
-    --     -- table for defining the size of the max file for all features, above these limits we disable features like treesitter.
-    --     large_buf = { size = 1024 * 100, lines = 10000 },
-    --     notifications = true, -- enable or disable notifications on start
-    --   },
+    features = {
+      nullls = false,
+      -- autopairs = true, -- enable or disable autopairs on start
+      -- cmp = true, -- enable or disable cmp on start
+      -- diagnostics_mode = 3, -- diagnostic mode on start (0 = off, 1 = no signs/virtual text, 2 = no virtual text, 3 = off)
+      -- highlighturl = true, -- enable or disable highlighting of urls on start
+      -- -- table for defining the size of the max file for all features, above these limits we disable features like treesitter.
+      -- large_buf = { size = 1024 * 100, lines = 10000 },
+      -- notifications = true, -- enable or disable notifications on start
+    },
     --   -- Enable git integration for detached worktrees
     --   git_worktrees = {
     --     { toplevel = vim.env.HOME, gitdir = vim.env.HOME .. "/.dotfiles" },
