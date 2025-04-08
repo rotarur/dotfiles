@@ -27,6 +27,7 @@ return {
         "gotests",
         "impl",
         "json-to-struct",
+        "jsonls",
         "misspell",
         "revive",
         "shellcheck",
@@ -43,6 +44,7 @@ return {
         "markdownlint",
         "yaml-language-server",
         "pyright",
+        "taplo",
       },
 
       -- if set to true this will check each tool for updates. If updates
