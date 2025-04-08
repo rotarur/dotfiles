@@ -90,11 +90,6 @@ if.app-id = 'net.whatsapp.WhatsApp'
 run = ['layout tiling', 'move-node-to-workspace 3']
 
 [[on-window-detected]]
-if.app-id = 'com.github.wez.wezterm'
-run = ['layout tiling', 'move-node-to-workspace T']
-
-
-[[on-window-detected]]
 if.app-id = 'com.smartcodeltd.stremio'
 run = ['layout tiling', 'move-node-to-workspace S']
 
@@ -121,9 +116,9 @@ run = ['layout tiling', 'move-node-to-workspace S']
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#exec-and-forget
 # You can uncomment the following lines to open up terminal with alt + enter shortcut (like in i3)
-cmd-ctrl-a = 'exec-and-forget alacritty'
-cmd-ctrl-k = 'exec-and-forget kitty'
-cmd-ctrl-w = 'exec-and-forget wezterm'
+# cmd-ctrl-a = 'exec-and-forget alacritty'
+# cmd-ctrl-k = 'exec-and-forget kitty'
+# cmd-ctrl-w = 'exec-and-forget wezterm'
 alt-ctrl-f = "fullscreen"
 # tell application "Terminal"
 #     do script
@@ -176,7 +171,7 @@ alt-p = 'workspace P'
 # alt-q = 'workspace Q'
 # alt-r = 'workspace R'
 alt-s = 'workspace S' # stremio
-alt-t = 'workspace T' # Terminal
+# alt-t = 'workspace T' # Terminal
 # alt-u = 'workspace U'
 # alt-v = 'workspace V'
 # alt-w = 'workspace W'
@@ -209,7 +204,7 @@ alt-shift-p = 'move-node-to-workspace P'
 # alt-shift-q = 'move-node-to-workspace Q'
 # alt-shift-r = 'move-node-to-workspace R'
 # alt-shift-s = 'move-node-to-workspace S'
-alt-shift-t = 'move-node-to-workspace T'
+# alt-shift-t = 'move-node-to-workspace T'
 # alt-shift-u = 'move-node-to-workspace U'
 # alt-shift-v = 'move-node-to-workspace V'
 # alt-shift-w = 'move-node-to-workspace W'
