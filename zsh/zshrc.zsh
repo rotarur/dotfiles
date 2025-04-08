@@ -24,9 +24,17 @@ DISABLE_UNTRACKED_FILES_DIRTY="true"
 [[ ! -z "$(command -v nvim)" ]] && export GIT_EDITOR='vim'
 
 # fzf
-[[ -f ~/.fzf.zsh ]] && source ~/.fzf.zsh
-[[ ! -z "$(command -v fzf)" ]] && alias fvi='vi $(fzf --height 40%)'
+# [[ -f ~/.fzf.zsh ]] && source ~/.fzf.zsh
+[[ ! -z "$(command -v fzf)" ]] && source <(fzf --zsh); alias fvi='vi $(fzf --height 40%)'
+export FZF_DEFAULT_COMMAND="fd --hidden --strip-cwd-prefix --exclude .git"
+export FZF_DEFAULT_OPTS="--height 50% --tmux bottom,50% --layout=default --border --preview 'cat {}' --color=hl:#2dd4bf"
+alias fman="compgen -c | fzf | xargs man"
 
+# fzf-git
+[[ -f ~/.fzf-git.zsh ]] && source ~/.fzf-git.zsh
+
+
+alias zed='open -a /Applications/Zed.app/Contents/MacOS/zed "$@"'
 alias watcha='watch -d -n 1 '
 alias zj='zellij options --theme gruvbox-dark'
 alias myip='curl ipinfo.io'
@@ -83,8 +91,10 @@ alias kgds='k get daemonset'
 alias kgsvc='k get service'
 alias kgscrt='k get secret'
 
+
 # itialise completions with ZSH's compinit
-autoload -U +X compinit && compinit
+fpath=($HOME/.config/asdf/completions $fpath)
+autoload -Uz compinit && compinit
 
 source <(kubectl completion zsh)
 # complete -F __start_kubectl k
@@ -102,7 +112,7 @@ export PATH="$HOME/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$GOROOT/bin:$PATH"
 export PATH="$GOPATH/bin:$PATH"
-export PATH="$HOME/.asdf:$PATH"
+export PATH="$HOME/.config/asdf/shims:$PATH"
 export PATH="${HOME}/Library/Python/2.7/bin:$PATH"
 export PATH="/usr/local/opt/libpq/bin:$PATH"
 export PATH="${HOME}/.local/share/solana/install/active_release/bin:$PATH"
@@ -125,8 +135,6 @@ export GPG_TTY=$(tty)
 gpgconf --launch gpg-agent
 echo -e "# Enable gpg to use the gpg-agent\nuse-agent" > ${HOME}/.gnupg/gpg.conf
 
-. $HOME/.asdf/asdf.sh
-
 # zoxide better cd
 eval "$(zoxide init zsh)"
 alias cd="z"
@@ -134,9 +142,6 @@ alias cd="z"
 export PATH="$(go env GOPATH)/bin:$PATH"
 
 eval "$(atuin init zsh)"
-
-# append completions to fpath
-#fpath=(${ASDF_DIR}/completions $fpath)
 
 #eval $(register-python-argcomplete ansible)
 #eval $(register-python-argcomplete ansible-config)
