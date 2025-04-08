@@ -89,7 +89,6 @@ return {
         -- ["<Leader>f"] = { require("astroui").get_icon.("DefaultFile", 1, true) .. "File" },
         ["<Leader>f"] = { desc = vim.g.icons.ui.File .. " File" },
         ["<Leader>n"] = false,
-        ["<Leader>w"] = false,
         ["<Leader>fw"] = { "<Cmd>w<CR>", desc = "Save" },
         ["<Leader>fp"] = { "<Cmd>Neotree toggle<CR>", desc = "Toggle Explorer" },
         ["<Leader>fo"] = {
@@ -104,8 +103,28 @@ return {
         },
 
         -- shortcuts
-        ["L"] = { "<CMD>]b<CR>", desc = "Next tab" },
-        ["H"] = { "<CMD>[b<CR>", desc = "Previous tab" },
+        L = { "<CMD>]b<CR>", desc = "Next tab" },
+        H = { "<CMD>[b<CR>", desc = "Previous tab" },
+        ["<Leader>v"] = {
+          "<CMD>vsplit | lua vim.lsp.buf.definition()<CR>",
+          desc = "Go to definition in vertical split",
+        },
+        J = { "mzJ`z", desc = "Keep cursor in place while appending lines" },
+        ["<Leader>lF"] = {
+          [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],
+          desc = "Replace current word in current buffer",
+        },
+        ["<Leader>w"] = { "<CMD>:w<CR>", desc = "Save buffer" },
+      },
+      v = {
+        J = { ":m '>+1<CR>gv=gv", desc = "Move selected like / block of text down" },
+        K = { ":m '<-2<CR>gv=gv", desc = "Move selected like / block of text up" },
+      },
+      x = {
+        p = { '"_dp', desc = "Paste line without losing the buffer" },
+      },
+      i = {
+        ["<C-c>"] = { "<Esc>", desc = "Ctrl-c as Escape" },
       },
     },
     -- -- add newline at EOF
@@ -118,22 +137,38 @@ return {
     -- end,
     -- easily configure auto commands
     autocmds = {
-      -- first key is the `augroup` (:h augroup)
-      add_new_line_at_eof = {
-        -- list of auto commands to set
+      -- disable alpha autostart
+      alpha_autostart = false,
+      restore_session = {
         {
-          -- events to trigger
-          event = "BufWritePre",
-          -- the rest of the autocmd options (:h nvim_create_autocmd)
-          desc = "Add new line at EOF",
+          event = "VimEnter",
+          desc = "Restore previous directory session if neovim opened with no arguments",
+          nested = true, -- trigger other autocommands as buffers open
           callback = function()
-            local lines = vim.api.nvim_buf_get_lines(0, -2, -1, false)
-            if lines[#lines] ~= "" and lines[#lines]:sub(-1) ~= "\n" then
-              vim.api.nvim_buf_set_lines(0, -1, -1, false, { "" })
+            -- Only load the session if nvim was started with no args
+            if vim.fn.argc(-1) == 0 then
+              -- try to load a directory session using the current working directory
+              require("resession").load(vim.fn.getcwd(), { dir = "dirsession", silence_errors = true })
             end
           end,
         },
       },
+      -- -- first key is the `augroup` (:h augroup)
+      -- add_new_line_at_eof = {
+      --   -- list of auto commands to set
+      --   {
+      --     -- events to trigger
+      --     event = "BufWritePre",
+      --     -- the rest of the autocmd options (:h nvim_create_autocmd)
+      --     desc = "Add new line at EOF",
+      --     callback = function()
+      --       local lines = vim.api.nvim_buf_get_lines(0, -2, -1, false)
+      --       if lines[#lines] ~= "" and lines[#lines]:sub(-1) ~= "\n" then
+      --         vim.api.nvim_buf_set_lines(0, -1, -1, false, { "" })
+      --       end
+      --     end,
+      --   },
+      -- },
       remove_duplicated_new_lines = {
         {
           event = { "BufWritePre" },
@@ -146,29 +181,29 @@ return {
           end, -- command = [[if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif]],
         },
       },
-      autohidetabline = {
-        -- each augroup contains a list of auto commands
-        {
-          -- create a new autocmd on the "User" event
-          event = "User",
-          -- the pattern is the name of our User autocommand events
-          pattern = "AstroBufsUpdated", -- triggered when vim.t.bufs is updated
-          -- nice description
-          desc = "Hide tabline when only one buffer and one tab",
-          -- add the autocmd to the newly created augroup
-          group = "autohidetabline",
-          callback = function()
-            -- if there is more than one buffer in the tab, show the tabline
-            -- if there are 0 or 1 buffers in the tab, only show the tabline if there is more than one vim tab
-            local new_showtabline = #vim.t.bufs > 1 and 2 or 1
-            -- check if the new value is the same as the current value
-            if new_showtabline ~= vim.opt.showtabline:get() then
-              -- if it is different, then set the new `showtabline` value
-              vim.opt.showtabline = new_showtabline
-            end
-          end,
-        },
-      },
+      -- autohidetabline = {
+      --   -- each augroup contains a list of auto commands
+      --   {
+      --     -- create a new autocmd on the "User" event
+      --     event = "User",
+      --     -- the pattern is the name of our User autocommand events
+      --     pattern = "AstroBufsUpdated", -- triggered when vim.t.bufs is updated
+      --     -- nice description
+      --     desc = "Hide tabline when only one buffer and one tab",
+      --     -- add the autocmd to the newly created augroup
+      --     group = "autohidetabline",
+      --     callback = function()
+      --       -- if there is more than one buffer in the tab, show the tabline
+      --       -- if there are 0 or 1 buffers in the tab, only show the tabline if there is more than one vim tab
+      --       local new_showtabline = #vim.t.bufs > 1 and 2 or 1
+      --       -- check if the new value is the same as the current value
+      --       if new_showtabline ~= vim.opt.showtabline:get() then
+      --         -- if it is different, then set the new `showtabline` value
+      --         vim.opt.showtabline = new_showtabline
+      --       end
+      --     end,
+      --   },
+      -- },
     },
     -- vim options can be configured here
     options = {
@@ -179,6 +214,12 @@ return {
         -- go to previous/next line with h,l,left arrow and right arrow
         -- when cursor reaches end/beginning of line
         whichwrap = "<>[]hl",
+        showtabline = 0,
+      },
+    },
+    cmp = {
+      completion = {
+        completeopt = "menu,menuone,noinsert",
       },
     },
 
@@ -197,18 +238,19 @@ return {
     --     update_in_insert = false,
     --   },
     --   -- passed to `vim.filetype.add`
-    --   filetypes = {
-    --     -- see `:h vim.filetype.add` for usage
-    --     extension = {
-    --       foo = "fooscript",
-    --     },
-    --     filename = {
-    --       [".foorc"] = "fooscript",
-    --     },
-    --     pattern = {
-    --       [".*/etc/foo/.*"] = "fooscript",
-    --     },
-    --   },
+    filetypes = {
+      -- see `:h vim.filetype.add` for usage
+      extension = {
+        rust_analyzer = "rust",
+      },
+      filename = {
+        Cargo = "rust",
+      },
+      pattern = {
+        [".*/Cargo.toml"] = "rust",
+        [".*/Cargo.lock"] = "rust",
+      },
+    },
     --   -- easily configure functions on key press
     --   on_keys = {
     --     -- first key is the namespace
@@ -220,17 +262,6 @@ return {
     --           if vim.opt.hlsearch:get() ~= new_hlsearch then vim.opt.hlsearch = new_hlsearch end
     --         end
     --       end,
-    --     },
-    --   },
-    --   -- easily configure vim options
-    --   options = {
-    --     -- first key is the type of option `vim.<first_key>`
-    --     opt = {
-    --       relativenumber = true, -- sets `vim.opt.relativenumber`
-    --       signcolumn = "auto", -- sets `vim.opt.relativenumber`
-    --     },
-    --     g = {
-    --       -- set global `vim.g` settings here
     --     },
     --   },
     --   -- configure AstroNvim features
@@ -249,42 +280,42 @@ return {
     --     { toplevel = vim.env.HOME, gitdir = vim.env.HOME .. "/.dotfiles" },
     --   },
     --   -- Configure project root detection, check status with `:AstroRootInfo`
-    --   rooter = {
-    --     -- list of detectors in order of prevalence, elements can be:
-    --     --   "lsp" : lsp detection
-    --     --   string[] : a list of directory patterns to look for
-    --     --   fun(bufnr: integer): string|string[] : a function that takes a buffer number and outputs detected roots
-    --     detector = {
-    --       "lsp", -- highest priority is getting workspace from running language servers
-    --       { ".git", "_darcs", ".hg", ".bzr", ".svn" }, -- next check for a version controlled parent directory
-    --       { "lua", "MakeFile", "package.json" }, -- lastly check for known project root files
-    --     },
-    --     -- ignore things from root detection
-    --     ignore = {
-    --       servers = {}, -- list of language server names to ignore (Ex. { "efm" })
-    --       dirs = {}, -- list of directory patterns (Ex. { "~/.cargo/*" })
-    --     },
-    --     -- automatically update working directory (update manually with `:AstroRoot`)
-    --     autochdir = false,
-    --     -- scope of working directory to change ("global"|"tab"|"win")
-    --     scope = "global",
-    --     -- show notification on every working directory change
-    --     notify = false,
+    -- rooter = {
+    --   -- list of detectors in order of prevalence, elements can be:
+    --   --   "lsp" : lsp detection
+    --   --   string[] : a list of directory patterns to look for
+    --   --   fun(bufnr: integer): string|string[] : a function that takes a buffer number and outputs detected roots
+    --   detector = {
+    --     "lsp", -- highest priority is getting workspace from running language servers
+    --     { ".git", "_darcs", ".hg", ".bzr", ".svn" }, -- next check for a version controlled parent directory
+    --     { "lua", "MakeFile", "package.json" }, -- lastly check for known project root files
     --   },
+    --   -- ignore things from root detection
+    --   ignore = {
+    --     servers = {}, -- list of language server names to ignore (Ex. { "efm" })
+    --     dirs = { "*.cargo/*" }, -- list of directory patterns (Ex. { "~/.cargo/*" })
+    --   },
+    --   -- automatically update working directory (update manually with `:AstroRoot`)
+    --   autochdir = true,
+    --   -- scope of working directory to change ("global"|"tab"|"win")
+    --   scope = "tab",
+    --   -- show notification on every working directory change
+    --   notify = true,
+    -- },
     --   -- Configuration table of session options for AstroNvim's session management powered by Resession
-    --   sessions = {
-    --     -- Configure auto saving
-    --     autosave = {
-    --       last = true, -- auto save last session
-    --       cwd = true, -- auto save session for each working directory
-    --     },
-    --     -- Patterns to ignore when saving sessions
-    --     ignore = {
-    --       dirs = {}, -- working directories to ignore sessions in
-    --       filetypes = { "gitcommit", "gitrebase" }, -- filetypes to ignore sessions
-    --       buftypes = {}, -- buffer types to ignore sessions
-    --     },
-    --   },
+    sessions = {
+      -- Configure auto saving
+      autosave = {
+        last = true, -- auto save last session
+        cwd = true, -- auto save session for each working directory
+      },
+      -- Patterns to ignore when saving sessions
+      ignore = {
+        dirs = {}, -- working directories to ignore sessions in
+        filetypes = { "gitcommit", "gitrebase" }, -- filetypes to ignore sessions
+        buftypes = {}, -- buffer types to ignore sessions
+      },
+    },
     -- }
   },
 }

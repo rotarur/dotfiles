@@ -61,6 +61,22 @@ return {
       luasnip.filetype_extend("javascript", { "javascriptreact" })
     end,
   },
+  {
+    "nvim-tree/nvim-tree.lua",
+    opts = function(_, opts)
+      local nvtree = require "nvim-tree"
+      nvtree.setup {
+        sync_root_with_cwd = true,
+        respect_buf_cwd = true,
+        update_focused_file = {
+          enable = true,
+          update_root = true,
+        },
+      }
+
+      return opts
+    end,
+  },
 
   {
     "windwp/nvim-autopairs",
@@ -89,6 +105,25 @@ return {
         -- disable for .vim files, but it work for another filetypes
         Rule("a", "a", "-vim")
       )
+    end,
+  },
+
+  { -- override nvim-cmp plugin
+    "hrsh7th/nvim-cmp",
+    -- override the options table that is used in the `require("cmp").setup()` call
+    opts = function(_, opts)
+      -- opts parameter is the default options table
+      -- the function is lazy loaded so cmp is able to be required
+      local cmp = require "cmp"
+      -- modify the mapping part of the table
+      cmp.setup {
+        completion = {
+          completeopt = "menu,menuone,noinsert",
+        },
+      }
+
+      -- return the new table to be used
+      return opts
     end,
   },
 }

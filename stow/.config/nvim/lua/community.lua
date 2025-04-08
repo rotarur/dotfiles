@@ -7,8 +7,13 @@
 ---@type LazySpec
 return {
   "AstroNvim/astrocommunity",
+  { import = "astrocommunity.recipes.telescope-nvchad-theme" },
+  { import = "astrocommunity.colorscheme.catppuccin" },
+  { import = "astrocommunity.recipes.vscode" },
+  { import = "astrocommunity.recipes.heirline-nvchad-statusline" },
   -- { import = "astrocommunity.pack.lua" },
   -- { import = "astrocommunity.recipes.neovide" },
-  { import = "astrocommunity.recipes.heirline-nvchad-statusline" },
+  -- { import = "astrocommunity.recipes.heirline-nvchad-statusline" },
+  -- { import = "astrocommunity.project.project-nvim" },
   -- import/override with your plugins folder
 }

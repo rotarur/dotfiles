@@ -33,7 +33,7 @@ return {
         "shfmt",
         "staticcheck",
         "vint",
-        "python",
+        "python-lsp-server",
         "terraform-ls",
         "tflint",
         "docker-compose-language-service",
@@ -42,6 +42,7 @@ return {
         "typescript-language-server",
         "markdownlint",
         "yaml-language-server",
+        "pyright",
       },
 
       -- if set to true this will check each tool for updates. If updates
