@@ -85,12 +85,12 @@ if.app-id = 'com.smartcodeltd.stremio'
 run = ['layout tiling', 'move-node-to-workspace S']
 
 [[on-window-detected]]
-if.app-id = 'us.zoom.xos'
-run = ['layout tiling', 'move-node-to-workspace 3']
+if.app-id = 'com.tinyspeck.slackmacgap'
+run = ['layout tiling', 'move-node-to-workspace 1']
 
 [[on-window-detected]]
-if.app-id = 'com.tinyspeck.slackmacgap'
-run = ['layout tiling', 'move-node-to-workspace 4']
+if.app-id = 'us.zoom.xos'
+run = ['layout tiling', 'move-node-to-workspace 3']
 
 [[on-window-detected]]
 if.app-id = 'im.riot.app'
@@ -102,6 +102,10 @@ run = ['layout tiling', 'move-node-to-workspace 4']
 
 [[on-window-detected]]
 if.app-id = 'net.whatsapp.WhatsApp'
+run = ['layout tiling', 'move-node-to-workspace 4']
+
+[[on-window-detected]]
+if.app-id = 'ru.keepcoder.Telegram'
 run = ['layout tiling', 'move-node-to-workspace 4']
 
 # 'main' binding mode declaration
