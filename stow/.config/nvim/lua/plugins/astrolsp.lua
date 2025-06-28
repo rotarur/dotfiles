@@ -16,6 +16,7 @@ return {
       inlay_hints = false, -- enable/disable inlay hints on start
       semantic_tokens = true, -- enable/disable semantic token highlighting
     },
+    set_log_level = "off", -- disable log level. switch to "debug" if needed
     -- customize lsp formatting options
     formatting = {
       -- control auto formatting on save
@@ -53,7 +54,7 @@ return {
                 enabled = true,
                 autoSearchPaths = true,
                 maxLineLength = 100,
-                ignore = { "E501", "E231" },
+                ignore = { "E501", "E502", "E231" },
               },
             },
           },

@@ -39,11 +39,10 @@ return {
         "tflint",
         "docker-compose-language-service",
         "dockerfile-language-server",
-        "rust-analyzer",
         "typescript-language-server",
         "markdownlint",
         "yaml-language-server",
-        "pyright",
+        -- "pyright",
         "taplo",
       },
 

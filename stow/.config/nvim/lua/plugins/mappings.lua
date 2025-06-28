@@ -115,6 +115,8 @@ return {
           desc = "Replace current word in current buffer",
         },
         ["<Leader>w"] = { "<CMD>:w<CR>", desc = "Save buffer" },
+        ["gd"] = { function() vim.lsp.buf.definition() end, desc = "Go to definition" },
+        ["gD"] = { function() vim.lsp.buf.declaration() end, desc = "Go to declaration" },
       },
       v = {
         J = { ":m '>+1<CR>gv=gv", desc = "Move selected like / block of text down" },
