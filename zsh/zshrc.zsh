@@ -62,6 +62,8 @@ alias ghpmdr='gh pr merge -d -r'
 # GNU
 [[ ! -z "$(command -v gsed)" ]] && alias sed=$(which gsed)
 
+. "$HOME/.cargo/env"
+
 # kitty aliases
 # if [ ! -z "$(command -v kitty)" ]; then
 #     alias diff="kitten diff"
@@ -91,11 +93,6 @@ alias kgds='k get daemonset'
 alias kgsvc='k get service'
 alias kgscrt='k get secret'
 
-
-# itialise completions with ZSH's compinit
-fpath=($HOME/.config/asdf/completions $fpath)
-autoload -Uz compinit && compinit
-
 source <(kubectl completion zsh)
 # complete -F __start_kubectl k
 
@@ -112,7 +109,6 @@ export PATH="$HOME/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$GOROOT/bin:$PATH"
 export PATH="$GOPATH/bin:$PATH"
-export PATH="$HOME/.config/asdf/shims:$PATH"
 export PATH="${HOME}/Library/Python/2.7/bin:$PATH"
 export PATH="/usr/local/opt/libpq/bin:$PATH"
 export PATH="${HOME}/.local/share/solana/install/active_release/bin:$PATH"
