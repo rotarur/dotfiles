@@ -27,3 +27,5 @@
 [difftool "kitty.gui"]
     cmd = kitten diff $LOCAL $REMOTE
 
+[commit]
+	gpgsign = true

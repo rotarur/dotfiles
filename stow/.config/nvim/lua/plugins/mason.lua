@@ -12,38 +12,40 @@ return {
       -- start
       ensure_installed = {
         -- you can turn off/on auto_update per tool
-        { "bash-language-server", auto_update = true },
+        -- { "bash-language-server", auto_update = true },
 
-        "lua-language-server",
-        "vim-language-server",
-        "gopls",
-        "golangci-lint",
-        "stylua",
+        -- "lua-language-server",
+        -- "vim-language-server",
+        -- "gopls",
+        -- "golangci-lint",
+        -- "stylua",
         "shellcheck",
         "editorconfig-checker",
-        "gofumpt",
-        "golines",
-        "gomodifytags",
-        "gotests",
+        "rust-analyzer",
+        -- "gofumpt",
+        -- "golines",
+        -- "gomodifytags",
+        -- "gotests",
         "impl",
-        "json-to-struct",
-        "jsonls",
+        -- "json-to-struct",
+        -- "jsonls",
         "misspell",
         "revive",
         "shellcheck",
         "shfmt",
         "staticcheck",
         "vint",
-        "python-lsp-server",
+        -- "python-lsp-server",
         "terraform-ls",
         "tflint",
-        "docker-compose-language-service",
-        "dockerfile-language-server",
-        "typescript-language-server",
-        "markdownlint",
+        -- "docker-compose-language-service",
+        -- "dockerfile-language-server",
+        -- "typescript-language-server",
+        -- "markdownlint",
         "yaml-language-server",
         -- "pyright",
         "taplo",
+        -- "prettier",
       },
 
       -- if set to true this will check each tool for updates. If updates
@@ -67,41 +69,30 @@ return {
       -- doing lazy loading.
       integrations = {
         ["mason-lspconfig"] = true,
-        ["mason-null-ls"] = true,
-        ["mason-nvim-dap"] = true,
-      },
-    },
-  },
-  -- use mason-lspconfig to configure LSP installations
-  {
-    "williamboman/mason-lspconfig.nvim",
-    -- overrides `require("mason-lspconfig").setup(...)`
-    opts = {
-      ensure_installed = {
-        "lua_ls",
-        -- add more arguments for adding more language servers
+        -- ["mason-null-ls"] = true,
+        -- ["mason-nvim-dap"] = true,
       },
     },
   },
   -- use mason-null-ls to configure Formatters/Linter installation for null-ls sources
-  {
-    "jay-babu/mason-null-ls.nvim",
-    -- overrides `require("mason-null-ls").setup(...)`
-    opts = {
-      ensure_installed = {
-        "stylua",
-        -- add more arguments for adding more null-ls sources
-      },
-    },
-  },
-  {
-    "jay-babu/mason-nvim-dap.nvim",
-    -- overrides `require("mason-nvim-dap").setup(...)`
-    opts = {
-      ensure_installed = {
-        "python",
-        -- add more arguments for adding more debuggers
-      },
-    },
-  },
+  -- {
+  --   "jay-babu/mason-null-ls.nvim",
+  --   -- overrides `require("mason-null-ls").setup(...)`
+  --   opts = {
+  --     ensure_installed = {
+  --       "stylua",
+  --       -- add more arguments for adding more null-ls sources
+  --     },
+  --   },
+  -- },
+  -- {
+  --   "jay-babu/mason-nvim-dap.nvim",
+  --   -- overrides `require("mason-nvim-dap").setup(...)`
+  --   opts = {
+  --     ensure_installed = {
+  --       "python",
+  --       -- add more arguments for adding more debuggers
+  --     },
+  --   },
+  -- },
 }

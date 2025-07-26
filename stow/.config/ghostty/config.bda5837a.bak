@@ -125,7 +125,7 @@ font-synthetic-style = bold,italic,bold-italic
 # [fontdrop.info](https://fontdrop.info).
 # 
 # To generally disable most ligatures, use `-calt, -liga, -dlig`.
-font-feature = -liga,-clig,-calt
+font-feature = +feat
 
 # Font size in points. This value can be a non-integer and the nearest integer
 # pixel size will be selected. If you have a high dpi display where 1pt = 2px
@@ -1960,7 +1960,7 @@ quick-terminal-space-behavior = move
 #   * `bash`, `elvish`, `fish`, `zsh` - Use this specific shell injection scheme.
 # 
 # The default value is `detect`.
-shell-integration = sudo
+shell-integration = detect
 
 # Shell integration features to enable. These require our shell integration
 # to be loaded, either automatically via shell-integration or manually.
@@ -2524,4 +2524,3 @@ auto-update =
 # This only works on macOS since only macOS has an auto-update feature.
 auto-update-channel = 
 
-keybind = shift+enter=text:\n
