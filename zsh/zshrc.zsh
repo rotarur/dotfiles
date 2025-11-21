@@ -33,7 +33,6 @@ alias fman="compgen -c | fzf | xargs man"
 # fzf-git
 [[ -f ~/.fzf-git.zsh ]] && source ~/.fzf-git.zsh
 
-
 alias zed='open -a /Applications/Zed.app/Contents/MacOS/zed "$@"'
 alias watcha='watch -d -n 1 '
 alias zj='zellij options --theme gruvbox-dark'
@@ -53,6 +52,9 @@ alias tx='tmux'
 
 # terraform
 alias tf='terraform'
+
+# terragrunt
+alias tg='terragrunt'
 
 # gh
 alias ghpc='gh pr create'
@@ -93,9 +95,6 @@ alias kgds='k get daemonset'
 alias kgsvc='k get service'
 alias kgscrt='k get secret'
 
-source <(kubectl completion zsh)
-# complete -F __start_kubectl k
-
 # aws
 alias assume-role='function(){
    unset AWS_SECRET_ACCESS_KEY
@@ -118,6 +117,9 @@ export XDG_CONFIG_HOME=$HOME/.config
 
 # reload zsh
 alias reload!='RELOAD=1 source ~/.zshrc'
+
+source <(kubectl completion zsh)
+# complete -F __start_kubectl k
 
 # GPG
 alias gpg-restart='gpgconf --kill gpg-agent; gpgconf --launch gpg-agent'
