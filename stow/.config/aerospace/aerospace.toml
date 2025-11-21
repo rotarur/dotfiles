@@ -89,6 +89,10 @@ if.app-id = 'com.tinyspeck.slackmacgap'
 run = ['layout tiling', 'move-node-to-workspace 1']
 
 [[on-window-detected]]
+if.app-id = 'com.bitwarden.desktop'
+run = ['layout tiling', 'move-node-to-workspace 1']
+
+[[on-window-detected]]
 if.app-id = 'us.zoom.xos'
 run = ['layout tiling', 'move-node-to-workspace 3']
 
