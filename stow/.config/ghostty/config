@@ -397,7 +397,7 @@ freetype-load-flags = hinting,force-autohint,monochrome,autohint
 # 
 #   - macOS: titlebar tabs style is not updated when switching themes.
 # 
-theme = gruvbox-material
+# theme = gruvbox
 
 # Background color for the window.
 # Specified as either hex (`#RRGGBB` or `RRGGBB`) or a named X11 color.
@@ -1718,7 +1718,7 @@ clipboard-trim-trailing-spaces = true
 # Require confirmation before pasting text that appears unsafe. This helps
 # prevent a "copy/paste attack" where a user may accidentally execute unsafe
 # commands by pasting text with newlines.
-clipboard-paste-protection = true
+clipboard-paste-protection = false
 
 # If true, bracketed pastes will be considered safe. By default, bracketed
 # pastes are considered safe. "Bracketed" pastes are pastes while the running
@@ -1960,7 +1960,7 @@ quick-terminal-space-behavior = move
 #   * `bash`, `elvish`, `fish`, `zsh` - Use this specific shell injection scheme.
 # 
 # The default value is `detect`.
-shell-integration = sudo
+shell-integration = zsh
 
 # Shell integration features to enable. These require our shell integration
 # to be loaded, either automatically via shell-integration or manually.
@@ -2369,7 +2369,7 @@ gtk-opengl-debug = false
 # default GSK renderer, or set the GSK_RENDERER environment variable to your
 # renderer of choice before launching Ghostty. This setting has no effect when
 # using versions of GTK earlier than 4.14.0.
-gtk-gsk-renderer = opengl
+# gtk-gsk-renderer = opengl
 
 # If `true`, the Ghostty GTK application will run in single-instance mode:
 # each new `ghostty` process launched will result in a new window if there is
@@ -2447,7 +2447,7 @@ gtk-wide-tabs = true
 # 
 # This configuration only has an effect if Ghostty was built with
 # Adwaita support.
-gtk-adwaita = true
+# gtk-adwaita = true
 
 # Custom CSS files to be loaded.
 # 
