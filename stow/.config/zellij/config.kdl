@@ -130,13 +130,12 @@ keybinds clear-defaults=true {
         bind "j" { MoveFocus "down"; SwitchToMode "normal"; }
         bind "k" { MoveFocus "up"; SwitchToMode "normal"; }
         bind "Shift h" { Resize "Increase left"; }
-        bind "Shift h" { GoToPreviousTab; }
         bind "Shift j" { Resize "Increase down"; }
         bind "Shift k" { Resize "Increase up"; }
         bind "Shift l" { Resize "Increase right"; }
-        bind "n" { GoToNextTab; SwitchToMode "normal"; }
+        bind "n" { GoToNextTab; }
         bind "o" { FocusNextPane; }
-        bind "p" { GoToPreviousTab; SwitchToMode "normal"; }
+        bind "p" { GoToPreviousTab; }
         // bind "Ctrl s" { Write 2; SwitchToMode "normal"; }
         bind "x" { CloseFocus; SwitchToMode "normal"; }
         bind "z" { ToggleFocusFullscreen; SwitchToMode "normal"; }
