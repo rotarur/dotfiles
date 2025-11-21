@@ -95,15 +95,6 @@ alias kgds='k get daemonset'
 alias kgsvc='k get service'
 alias kgscrt='k get secret'
 
-# aws
-alias assume-role='function(){
-   unset AWS_SECRET_ACCESS_KEY
-   unset AWS_SESSION_TOKEN
-   unset AWS_SECURITY_TOKEN
-   unset ASSUMED_ROLE
-   eval $(command assume-role -duration=12h $@)
-}'
-
 export PATH="$HOME/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$GOROOT/bin:$PATH"
@@ -140,6 +131,8 @@ alias cd="z"
 export PATH="$(go env GOPATH)/bin:$PATH"
 
 eval "$(atuin init zsh)"
+
+eval "$(~/.local/bin/mise activate zsh)"
 
 #eval $(register-python-argcomplete ansible)
 #eval $(register-python-argcomplete ansible-config)
