@@ -20,9 +20,7 @@ keymap.set("n", "<leader>s.", function()
 end, { desc = "Find word under cursor" })
 
 -- Rename
-keymap.set("n", "<leader>rn", function()
-  return ":IncRename " .. vim.fn.expand("<cword>")
-end, { expr = true })
+keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { expr = true })
 --
 -- Tabs
 keymap.set("n", "te", ":tabedit<Return>", opts)
@@ -43,3 +41,11 @@ keymap.set("n", "mk", "<C-w>k")
 keymap.set("n", "<C-j>", function()
   vim.diagnostic.get_next()
 end, opts)
+
+--   -- Key mappings for LSP functions
+--   vim.keymap.set('n', 'gd', vim.lsp.buf.definition)
+--   vim.keymap.set('n', 'gr', vim.lsp.buf.references)
+--   vim.keymap.set('n', 'K', vim.lsp.buf.hover)
+--   vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename)
+--   vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action)
+-- end
