@@ -109,9 +109,6 @@ export XDG_CONFIG_HOME=$HOME/.config
 # reload zsh
 alias reload!='RELOAD=1 source ~/.zshrc'
 
-source <(kubectl completion zsh)
-# complete -F __start_kubectl k
-
 # GPG
 alias gpg-restart='gpgconf --kill gpg-agent; gpgconf --launch gpg-agent'
 
@@ -124,6 +121,8 @@ export GPG_TTY=$(tty)
 gpgconf --launch gpg-agent
 echo -e "# Enable gpg to use the gpg-agent\nuse-agent" > ${HOME}/.gnupg/gpg.conf
 
+eval "$(~/.local/bin/mise activate zsh)"
+
 # zoxide better cd
 eval "$(zoxide init zsh)"
 alias cd="z"
@@ -132,7 +131,8 @@ export PATH="$(go env GOPATH)/bin:$PATH"
 
 eval "$(atuin init zsh)"
 
-eval "$(~/.local/bin/mise activate zsh)"
+source <(kubectl completion zsh)
+# complete -F __start_kubectl k
 
 #eval $(register-python-argcomplete ansible)
 #eval $(register-python-argcomplete ansible-config)
