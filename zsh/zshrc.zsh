@@ -33,8 +33,10 @@ alias fman="compgen -c | fzf | xargs man"
 # fzf-git
 [[ -f ~/.fzf-git.zsh ]] && source ~/.fzf-git.zsh
 
-alias zed='open -a /Applications/Zed.app/Contents/MacOS/zed "$@"'
-alias watcha='watch -d -n 1 '
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  alias zed='open -a /Applications/Zed.app/Contents/MacOS/zed "$@"'
+  alias watcha='watch -d -n 1 '
+fi
 alias zj='zellij options --theme gruvbox-dark'
 alias myip='curl ipinfo.io'
 
@@ -99,10 +101,13 @@ export PATH="$HOME/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$GOROOT/bin:$PATH"
 export PATH="$GOPATH/bin:$PATH"
-export PATH="${HOME}/Library/Python/2.7/bin:$PATH"
 export PATH="/usr/local/opt/libpq/bin:$PATH"
 export PATH="${HOME}/.local/share/solana/install/active_release/bin:$PATH"
 export PATH="/opt/homebrew/bin:$PATH"
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  export PATH="${HOME}/Library/Python/2.7/bin:$PATH"
+fi
 
 export XDG_CONFIG_HOME=$HOME/.config
 
@@ -143,4 +148,3 @@ source <(kubectl completion zsh)
 #eval $(register-python-argcomplete ansible-playbook)
 #eval $(register-python-argcomplete ansible-pull)
 #eval $(register-python-argcomplete ansible-vault)
-

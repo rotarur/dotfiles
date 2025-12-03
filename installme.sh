@@ -1,160 +1,194 @@
 #!/bin/bash
 
+# Detect OS
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    OS="macos"
+elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    # Check for package manager to determine distribution
+    if command -v apt &> /dev/null; then
+        OS="linux-debian"
+    elif command -v pacman &> /dev/null; then
+        OS="linux-arch"
+    else
+        echo "Error: This script requires Debian/Ubuntu (apt), Arch Linux (pacman), or macOS"
+        echo "Detected Linux but neither apt nor pacman is available. Unsupported distribution."
+        exit 1
+    fi
+else
+    echo "Unsupported OS: $OSTYPE"
+    echo "This script supports macOS, Debian/Ubuntu Linux, and Arch Linux only."
+    exit 1
+fi
+
+echo "Detected OS: $OS"
+
+# Detect if running in a container
+IN_CONTAINER=false
+if [ -f /.dockerenv ] || \
+   [ -n "${container:-}" ] || \
+   grep -qa "container=" /proc/1/environ 2>/dev/null || \
+   grep -q docker /proc/1/cgroup 2>/dev/null || \
+   [ -n "${KUBERNETES_SERVICE_HOST:-}" ]; then
+    IN_CONTAINER=true
+fi
+
+# Determine if we need sudo
+# If in container and running as root, don't use sudo
+# Otherwise, use sudo
+if [ "$IN_CONTAINER" = true ] && [ "$(id -u)" -eq 0 ]; then
+    SUDO_CMD=""
+    echo "Running in container as root - sudo not required"
+elif [ "$(id -u)" -eq 0 ]; then
+    SUDO_CMD=""
+    echo "Running as root - sudo not required"
+else
+    SUDO_CMD="sudo"
+    echo "Running as regular user - will use sudo"
+fi
+
 if [ ! -d ~/.dotfiles ]; then
    mkdir ~/.dotfiles
 fi
 
 cp -r . ~/.dotfiles
 
-ZSRCDOT=~/.dotfiles/zsh/zshrc.cfg
+ZSRCDOT=~/.dotfiles/zsh/zshrc.zsh
 
-# network-manager-openconnect-gnome if not for KDE - fix it
+# OS-specific package installation
+if [ "$OS" == "linux-debian" ]; then
+    # Linux (Debian/Ubuntu) packages
+    PACKAGES="yarn neovim silversearcher-ag gimp ansible
+       apt-transport-https curl whois
+       terminator zsh containerd ruby-full python3-venv
+       gnupg2 keepassx default-jre python3-pip evince
+       jq dconf-editor tmux fonts-firacode fonts-powerline
+       tree atop nmap openconnect network-manager-openconnect
+       network-manager-openconnect-gnome gnome-terminal
+       linux-headers-generic fzf stow"
 
-PACKAGES="yarn docker.io docker-compose packer
-   neovim silversearcher-ag gimp ansible
-   apt-transport-https curl whois
-   terminator zsh containerd ruby-full python3-venv
-   gnupg2 virtualbox keepassx python-setuptools
-   default-jre python3-pip python python-dev evince
-   jq dconf-editor tmux fonts-firacode fonts-powerline
-   tree atop nmap openconnect network-manager-openconnect
-   network-manager-openconnect-gnome gnome-terminal
-   vagrant linux-headers-generic"
+    # Set non-interactive mode to avoid debconf issues
+    export DEBIAN_FRONTEND=noninteractive
 
-sudo dpkg-reconfigure virtualbox-dkms
-sudo dpkg-reconfigure virtualbox
+    echo "Update cache"
+    ${SUDO_CMD} apt update
 
-echo "Remove nano"
-sudo apt -y purge nano
+    echo "Remove nano"
+    if command -v nano &> /dev/null; then
+        ${SUDO_CMD} apt -y purge nano
+    fi
 
-echo "Install pip requirements"
-sudo pip3 install -r python_packages.txt
+    echo "Install pip requirements"
+    ${SUDO_CMD} pip3 install -r python_packages.txt
 
-sudo apt -y install --no-install-recommends software-properties-common
+    ${SUDO_CMD} apt -y install --no-install-recommends software-properties-common
 
-echo "Install fzf"
-git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-~/.fzf/install
+    echo "Adding additional repositories"
+    ${SUDO_CMD} add-apt-repository -y universe
 
-echo "Adding additional repositories"
-sudo add-apt-repository -y universe
+    ${SUDO_CMD} apt-get -y install libterm-readline-perl-perl
 
-echo "Install apt-fast"
-sudo add-apt-repository -y ppa:apt-fast/stable
-sudo apt-get -y update
-echo -e "1\n5\nno\n" | sudo apt-get -y install apt-fast
+    echo "Install apt-fast"
+    ${SUDO_CMD} add-apt-repository -y ppa:apt-fast/stable
+    ${SUDO_CMD} apt-get -y update
+    # Use debconf-set-selections to pre-configure apt-fast
+    echo "apt-fast apt-fast/maxconnections string 5" | ${SUDO_CMD} debconf-set-selections
+    echo "apt-fast apt-fast/dlflag boolean true" | ${SUDO_CMD} debconf-set-selections
+    ${SUDO_CMD} apt-get -y install apt-fast
 
-echo "Install Atom Editor"
-wget -qO - https://packagecloud.io/AtomEditor/atom/gpgkey | sudo apt-key add -
-sudo sh -c 'echo "deb [arch=amd64] https://packagecloud.io/AtomEditor/atom/any/ any main" > /etc/apt/sources.list.d/atom.list'
-sudo apt -y update
-sudo apt -y install atom
+    echo "Installing packages"
+    ${SUDO_CMD} apt update && ${SUDO_CMD} apt -y install $PACKAGES
 
-echo "Installing packages"
-sudo apt update && sudo apt -y install $PACKAGES
+    # if [[ ! -n "$(command -v snap)" ]]; then
+    #    echo "Installing snapd on system"
+    #    ${SUDO_CMD} apt -y install snapd
+    # fi
 
-if [[ ! -n "$(command -v snap)" ]]; then
-   echo "Installing snapd on system"
-   sudo apt -y install snapd
+    # echo "Install telegram-desktop using snap"
+    # ${SUDO_CMD} snap install telegram-desktop
+
+    # echo "Install bitwarden with snap"
+    # ${SUDO_CMD} snap install bitwarden
+
+    # echo "Install zoom-client with snap"
+    # ${SUDO_CMD} snap install zoom-client
+
+    # echo "Install vscode with snap"
+    # ${SUDO_CMD} snap install code --classic
+
+elif [ "$OS" == "linux-arch" ]; then
+    # Arch Linux packages
+    PACKAGES="yarn neovim the_silver_searcher gimp ansible
+       curl whois terminator zsh containerd ruby
+       python python-pip gnupg keepassxc jre-openjdk
+       evince jq dconf-editor tmux ttf-fira-code
+       ttf-powerline-fonts tree atop nmap openconnect
+       networkmanager-openconnect networkmanager-openconnect-gnome
+       gnome-terminal linux-headers fzf stow"
+
+    echo "Update package database"
+    ${SUDO_CMD} pacman -Sy
+
+    echo "Remove nano if installed"
+    if command -v nano &> /dev/null; then
+        ${SUDO_CMD} pacman -Rns --noconfirm nano
+    fi
+
+    echo "Installing packages"
+    ${SUDO_CMD} pacman -S --needed --noconfirm $PACKAGES
+
+    echo "Install pip requirements"
+    ${SUDO_CMD} pip3 install -r python_packages.txt
+
+elif [ "$OS" == "macos" ]; then
+    # macOS packages using Homebrew
+    if [[ ! -n "$(command -v brew)" ]]; then
+        echo "Installing Homebrew"
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    fi
+
+    echo "Updating Homebrew"
+    brew update
+
+    echo "Installing packages with Homebrew"
+    brew install yarn docker docker-compose packer \
+        neovim the_silver_searcher gimp ansible \
+        curl whois zsh containerd ruby python@3.11 \
+        gnupg keepassxc python-setuptools \
+        openjdk python@3.11 jq tmux \
+        tree nmap openconnect stow
+
+    # echo "Installing cask packages"
+    # brew install --cask virtualbox keepassxc \
+    #     telegram zoom visual-studio-code atom
+
+    # echo "Install pip requirements"
+    # pip3 install -r python_packages.txt
 fi
 
-echo "Install telegram-desktop using snap"
-sudo snap install telegram-desktop
-
-echo "Install bitwarden with snap"
-sudo snap install bitwarden
-
-echo "Install zoom-client with snap"
-sudo snap install zoom-client
-
-echo "Install vscode with snap"
-sudo snap install code --classic
-
-sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
-       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-
 ZSH=$(which zsh)
-
-echo "Configuring tmux"
-ln -sf ${HOME}/.dotfiles/tmux/tmux.conf ${HOME}/.tmux.conf
 
 echo "Install ohmyzsh"
 curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -o install.sh
 echo -e "Y\n" | sh install.sh
 rm -f install.sh
 
-echo "Install asdf package manager"
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf
-cd ~/.asdf
-git checkout "$(git describe --abbrev=0 --tags)"
-. $HOME/.asdf/asdf.sh
+if ! command -v mise &> /dev/null; then
+    echo "Install mise"
+    curl https://mise.run | sh
+    # Add mise to current shell, if not already available (may require opening a new shell)
+    export PATH="$HOME/.local/bin:$PATH"
+fi
 
-echo "Install nodejs with asdf"
-asdf plugin-add nodejs && \
-asdf install nodejs latest && \
-asdf global nodejs latest
+if [ ! -d ~/.config ]; then
+    echo "Create ~/.config directory"
+    mkdir -p ~/.config
+fi
 
-echo "Install argocd with asdf"
-asdf plugin-add argocd https://github.com/beardix/asdf-argocd.git && \
-asdf install argocd latest && \
-asdf global argocd latest
+echo "Stow .dotfiles"
+stow -t ~/.config -d ~/.dotfiles/stow/.config .
 
-echo "Install helm with asdf"
-asdf plugin-add helm https://github.com/Antiarchitect/asdf-helm.git && \
-asdf install helm latest && \
-asdf global helm latest
-
-echo "Install kustomize with asdf"
-asdf plugin-add kustomize https://github.com/Banno/asdf-kustomize.git && \
-asdf install kustomize latest &&\
-asdf global kustomize latest
-
-# install from gcp
-echo "Install awscli with asdf"
-asdf install awscli latest && \
-asdf global awscli latest
-
-echo "Install kubectl with asdf"
-asdf plugin-add kubectl https://github.com/asdf-community/asdf-kubectl.git && \
-asdf install kubectl latest && \
-asdf global kubectl latest
-
-echo "Install kubectx with asdf"
-asdf plugin add kubectx && \
-asdf install kubectx 0.8.0 && \
-asdf global kubectx 0.8.0
-
-echo "Install minikube with asdf"
-asdf plugin-add minikube https://github.com/alvarobp/asdf-minikube.git &&\
-asdf install minikube latest &&\
-asdf global minikube latest
-
-echo "Install golang with asdf"
-asdf plugin-add golang https://github.com/kennyp/asdf-golang.git && \
-asdf install golang latest && \
-asdf global golang latest
-
-echo "Install terraform with asdf"
-asdf plugin-add terraform https://github.com/asdf-community/asdf-hashicorp.git && \
-asdf install terraform latest && \
-asdf global terraform latest
-
-echo "Install sops with asdf"
-asdf plugin-add sops https://github.com/feniix/asdf-sops.git && \
-asdf install sops latest && \
-asdf global sops latest
-
-asdf plugin-add lua https://github.com/Stratus3D/asdf-lua.git && \
-asdf install lua 5.1 && \
-asdf global lua 5.1
-
-asdf plugin-add rust https://github.com/code-lever/asdf-rust.git && \
-asdf install rust latest && \
-asdf global rust latest
-
-asdf plugin-add julia https://github.com/rkyleg/asdf-julia.git && \
-asdf install julia latest && \
-asdf global julia latest
+echo "Install all packages using mise from mise.toml"
+mise install
 
 echo "Installing zsh plugins"
 git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
@@ -177,13 +211,14 @@ fi
 
 source ${ZSRCDOT}
 
-curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
+# curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
 
-echo "Configuring sysctl"
-cat << EOF | sudo tee -a /etc/sysctl.conf
-vm.overcommit_memory = 1
-EOF
-sudo sysctl -p
+# if [ "$OS" == "linux" ]; then
+#     echo "Configuring sysctl"
+#     cat << EOF | ${SUDO_CMD} tee -a /etc/sysctl.conf
+# vm.overcommit_memory = 1
+# EOF
+#     ${SUDO_CMD} sysctl -p
+# fi
 
 echo "Done."
-
