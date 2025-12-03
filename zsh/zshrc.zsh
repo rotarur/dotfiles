@@ -10,6 +10,8 @@ setopt INC_APPEND_HISTORY     # Write to the history file immediately, not when 
 # setopt SHARE_HISTORY          # Share history between all sessions.
 setopt HIST_REDUCE_BLANKS     # Remove superfluous blanks from each command line being added to the history.
 
+export PS1="%m %1~: "
+
 WEZTERM_IN_TMUX=1
 
 HISTSIZE=10000000
@@ -139,7 +141,11 @@ if [ ! -f ${HOME}/.gnupg/gpg.conf ] || ! grep -q "use-agent" ${HOME}/.gnupg/gpg.
    echo -e "# Enable gpg to use the gpg-agent\nuse-agent" >> ${HOME}/.gnupg/gpg.conf
 fi
 
-eval "$(~/.local/bin/mise activate zsh)"
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  eval "$(/bin/mise activate zsh)"
+else
+  eval "$(~/.local/bin/mise activate zsh)"
+fi
 
 # zoxide better cd
 eval "$(zoxide init zsh)"

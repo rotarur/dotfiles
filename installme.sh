@@ -167,10 +167,21 @@ fi
 
 ZSH=$(which zsh)
 
-echo "Install ohmyzsh"
-curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -o install.sh
-echo -e "Y\n" | sh install.sh
-rm -f install.sh
+# echo "Install ohmyzsh"
+# curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -o install.sh
+# echo -e "Y\n" | sh install.sh
+# rm -f install.sh
+
+# Change shell to zsh on Linux
+if [[ "$OS" == "linux-debian" ]] || [[ "$OS" == "linux-arch" ]]; then
+    if [ "$SHELL" != "$ZSH" ]; then
+        echo "Changing default shell to zsh"
+        chsh -s $ZSH
+        echo "Shell changed to zsh. Please log out and log back in for changes to take effect."
+    else
+        echo "Shell is already set to zsh"
+    fi
+fi
 
 if ! command -v mise &> /dev/null; then
     echo "Install mise"
@@ -185,10 +196,43 @@ if [ ! -d ~/.config ]; then
 fi
 
 echo "Stow .dotfiles"
-stow -t ~/.config -d ~/.dotfiles/stow/.config . --adopt
+stow -t ~ -d ~/.dotfiles/stow/ . --adopt
 
 echo "Install all packages using mise from mise.toml"
 mise install
+
+# Set global versions for all tools from config.toml
+CONFIG_FILE=""
+if [ -f ~/.config/mise/config.toml ]; then
+    CONFIG_FILE=~/.config/mise/config.toml
+elif [ -f ~/.dotfiles/stow/.config/mise/config.toml ]; then
+    CONFIG_FILE=~/.dotfiles/stow/.config/mise/config.toml
+fi
+
+if [ -n "$CONFIG_FILE" ]; then
+    echo "Setting global versions for all mise tools from $CONFIG_FILE"
+    # Extract tools and versions from config.toml and format as tool@version
+    # Parse lines in [tools] section that match: tool = "version"
+    # Use sed to extract from [tools] section to end of file, then grep and format
+    TOOLS=$(sed -n '/^\[tools\]/,$p' "$CONFIG_FILE" | \
+            grep -v '^\[' | \
+            grep -E '^\s*[^[:space:]#=]+\s*=\s*"' | \
+            sed -E 's/^[[:space:]]*([^[:space:]=]+)[[:space:]]*=[[:space:]]*"([^"]+)".*/\1@\2/' | \
+            tr '\n' ' ')
+
+    if [ -n "$TOOLS" ]; then
+        echo "Found tools: $TOOLS"
+        mise use --global $TOOLS
+    else
+        echo "No tools found in mise config.toml"
+        echo "Debug: Checking config file content..."
+        echo "Config file: $CONFIG_FILE"
+        echo "Lines from [tools] section:"
+        sed -n '/^\[tools\]/,$p' "$CONFIG_FILE" | head -15
+    fi
+else
+    echo "mise config.toml not found at ~/.config/mise/config.toml or ~/.dotfiles/stow/.config/mise/config.toml"
+fi
 
 echo "Installing zsh plugins"
 git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
