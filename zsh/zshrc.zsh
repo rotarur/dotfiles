@@ -122,9 +122,22 @@ if [ ! -d $HOME/.gnupg ]; then
    mkdir $HOME/.gnupg
 fi
 
-export GPG_TTY=$(tty)
-gpgconf --launch gpg-agent
-echo -e "# Enable gpg to use the gpg-agent\nuse-agent" > ${HOME}/.gnupg/gpg.conf
+# Set GPG_TTY only if we have a TTY
+if [ -t 0 ]; then
+   export GPG_TTY=$(tty)
+   gpgconf --launch gpg-agent
+else
+   # For non-interactive environments, try to use a pseudo-TTY or disable pinentry
+   export GPG_TTY=$(tty 2>/dev/null || echo "/dev/tty")
+fi
+
+# Ensure gpg-agent is running
+gpgconf --launch gpg-agent 2>/dev/null || true
+
+# Configure gpg to use agent (only if file doesn't exist to avoid overwriting)
+if [ ! -f ${HOME}/.gnupg/gpg.conf ] || ! grep -q "use-agent" ${HOME}/.gnupg/gpg.conf; then
+   echo -e "# Enable gpg to use the gpg-agent\nuse-agent" >> ${HOME}/.gnupg/gpg.conf
+fi
 
 eval "$(~/.local/bin/mise activate zsh)"
 
