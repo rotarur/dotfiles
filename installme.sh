@@ -150,8 +150,8 @@ elif [ "$OS" == "macos" ]; then
     brew update
 
     echo "Installing packages with Homebrew"
-    brew install yarn docker docker-compose packer \
-        neovim the_silver_searcher gimp ansible \
+    brew install yarn \
+        the_silver_searcher gimp ansible \
         curl whois zsh containerd ruby python@3.11 \
         gnupg keepassxc python-setuptools \
         openjdk python@3.11 jq tmux \
@@ -185,7 +185,7 @@ if [ ! -d ~/.config ]; then
 fi
 
 echo "Stow .dotfiles"
-stow -t ~/.config -d ~/.dotfiles/stow/.config .
+stow -t ~/.config -d ~/.dotfiles/stow/.config . --adopt
 
 echo "Install all packages using mise from mise.toml"
 mise install
