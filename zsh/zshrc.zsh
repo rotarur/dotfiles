@@ -103,10 +103,10 @@ export PATH="$GOROOT/bin:$PATH"
 export PATH="$GOPATH/bin:$PATH"
 export PATH="/usr/local/opt/libpq/bin:$PATH"
 export PATH="${HOME}/.local/share/solana/install/active_release/bin:$PATH"
-export PATH="/opt/homebrew/bin:$PATH"
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
   export PATH="${HOME}/Library/Python/2.7/bin:$PATH"
+  export PATH="/opt/homebrew/bin:$PATH"
 fi
 
 export XDG_CONFIG_HOME=$HOME/.config
