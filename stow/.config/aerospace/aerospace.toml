@@ -90,7 +90,7 @@ run = ['layout tiling', 'move-node-to-workspace 1']
 
 [[on-window-detected]]
 if.app-id = 'com.bitwarden.desktop'
-run = ['layout tiling', 'move-node-to-workspace 1']
+run = ['layout floating']
 
 [[on-window-detected]]
 if.app-id = 'us.zoom.xos'
@@ -111,6 +111,15 @@ run = ['layout tiling', 'move-node-to-workspace 4']
 [[on-window-detected]]
 if.app-id = 'ru.keepcoder.Telegram'
 run = ['layout tiling', 'move-node-to-workspace 4']
+
+[[on-window-detected]]
+if.app-id = 'com.apple.systempreferences'
+if.app-name-regex-substring = 'settings'
+run = ['layout floating']
+
+[[on-window-detected]]
+if.app-id = 'com.agilebits.onepassword7'
+run = ['layout floating']
 
 # 'main' binding mode declaration
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes

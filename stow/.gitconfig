@@ -1,32 +1,32 @@
 [filter "lfs"]
-   clean = git-lfs clean -- %f
-   smudge = git-lfs smudge -- %f
-   process = git-lfs filter-process
-   required = true
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+  required = true
 [user]
-   name = Ruslan Rotaru
-   email = rotarur.social.apps@gmail.com
+  name = Ruslan Rotaru
+  email = rotarur.social.apps@gmail.com
 	signingkey = 3F75367F6C0571E7C93A8FDC7E50FB340C80CF10
 [push]
-   default = current
+  default = current
 [pull]
-   default = current
-   rebase = true
+  default = current
+  rebase = true
 
 [url "git@github.com:"]
 	insteadOf = https://github.com/
 [url "ssh://git@github.com/"]
 	insteadOf = https://github.com/
 [diff]
-    tool = kitty
-    guitool = kitty.gui
+  tool = kitty
+  guitool = kitty.gui
 [difftool]
-    prompt = false
-    trustExitCode = true
+  prompt = false
+  trustExitCode = true
 [difftool "kitty"]
-    cmd = kitten diff $LOCAL $REMOTE
+  cmd = kitten diff $LOCAL $REMOTE
 [difftool "kitty.gui"]
-    cmd = kitten diff $LOCAL $REMOTE
+  cmd = kitten diff $LOCAL $REMOTE
 
 [commit]
 	gpgsign = true

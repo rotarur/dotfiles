@@ -10,8 +10,6 @@ setopt INC_APPEND_HISTORY     # Write to the history file immediately, not when 
 # setopt SHARE_HISTORY          # Share history between all sessions.
 setopt HIST_REDUCE_BLANKS     # Remove superfluous blanks from each command line being added to the history.
 
-export PS1="%m %1~: "
-
 WEZTERM_IN_TMUX=1
 
 HISTSIZE=10000000
@@ -152,6 +150,7 @@ eval "$(zoxide init zsh)"
 alias cd="z"
 
 export PATH="$(go env GOPATH)/bin:$PATH"
+
 
 eval "$(atuin init zsh)"
 
