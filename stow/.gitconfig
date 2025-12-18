@@ -6,7 +6,7 @@
 [user]
    name = Ruslan Rotaru
    email = rotarur.social.apps@gmail.com
-	signingkey = F3DBB6A784D703BA2BD2FA3A32614536C7D7A9CB
+	signingkey = 3F75367F6C0571E7C93A8FDC7E50FB340C80CF10
 [push]
    default = current
 [pull]
