@@ -57,7 +57,8 @@ ZSRCDOT=~/.dotfiles/zsh/zshrc.zsh
 # OS-specific package installation
 if [ "$OS" == "linux-debian" ]; then
   # Linux (Debian/Ubuntu) packages
-  PACKAGES="yarn neovim silversearcher-ag gimp ansible
+  PACKAGES="yarn docker.io docker-compose
+       neovim silversearcher-ag gimp ansible
        apt-transport-https curl whois
        terminator zsh containerd ruby-full python3-venv
        gnupg2 keepassx default-jre python3-pip evince
@@ -90,6 +91,7 @@ if [ "$OS" == "linux-debian" ]; then
   echo "Install apt-fast"
   ${SUDO_CMD} add-apt-repository -y ppa:apt-fast/stable
   ${SUDO_CMD} apt-get -y update
+
   # Use debconf-set-selections to pre-configure apt-fast
   echo "apt-fast apt-fast/maxconnections string 5" | ${SUDO_CMD} debconf-set-selections
   echo "apt-fast apt-fast/dlflag boolean true" | ${SUDO_CMD} debconf-set-selections
@@ -117,7 +119,8 @@ if [ "$OS" == "linux-debian" ]; then
 
 elif [ "$OS" == "linux-arch" ]; then
   # Arch Linux packages
-  PACKAGES="yarn neovim the_silver_searcher gimp ansible
+  PACKAGES="yarn docker docker-compose
+       neovim the_silver_searcher gimp ansible
        curl whois terminator zsh containerd ruby
        python python-pip gnupg keepassxc jre-openjdk
        evince jq dconf-editor tmux ttf-fira-code
@@ -150,8 +153,8 @@ elif [ "$OS" == "macos" ]; then
   brew update
 
   echo "Installing packages with Homebrew"
-  brew install yarn \
-    the_silver_searcher gimp ansible \
+  brew install yarn docker docker-compose packer \
+    neovim the_silver_searcher gimp ansible \
     curl whois zsh containerd ruby python@3.11 \
     gnupg keepassxc python-setuptools \
     openjdk python@3.11 jq tmux \
@@ -196,7 +199,7 @@ if [ ! -d ~/.config ]; then
 fi
 
 echo "Stow .dotfiles"
-stow -t ~ -d ~/.dotfiles/stow/ . --adopt
+stow -t ~/.config -d ~/.dotfiles/stow/.config . --adopt
 
 echo "Install all packages using mise from mise.toml"
 mise install
