@@ -18,6 +18,8 @@ HISTORY_IGNORE="(ls|cd|pwd|exit|cd)*"
 
 DISABLE_UNTRACKED_FILES_DIRTY="true"
 
+OLLAMA_HOST="0.0.0.0"
+
 # use nvim
 [[ ! -z "$(command -v nvim)" ]] && alias vim='nvim'; alias vi='nvim'
 [[ ! -z "$(command -v nvim)" ]] && export EDITOR='vim'
@@ -139,11 +141,7 @@ if [ ! -f ${HOME}/.gnupg/gpg.conf ] || ! grep -q "use-agent" ${HOME}/.gnupg/gpg.
    echo -e "# Enable gpg to use the gpg-agent\nuse-agent" >> ${HOME}/.gnupg/gpg.conf
 fi
 
-if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-  eval "$(/bin/mise activate zsh)"
-else
-  eval "$(~/.local/bin/mise activate zsh)"
-fi
+eval "$(~/.local/bin/mise activate zsh)"
 
 # zoxide better cd
 eval "$(zoxide init zsh)"
