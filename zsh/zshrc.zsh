@@ -109,6 +109,9 @@ export PATH="${HOME}/.local/share/solana/install/active_release/bin:$PATH"
 if [[ "$OSTYPE" == "darwin"* ]]; then
   export PATH="${HOME}/Library/Python/2.7/bin:$PATH"
   export PATH="/opt/homebrew/bin:$PATH"
+  export PATH="/opt/homebrew/sbin:$PATH"
+
+  ulimit -n 7096
 fi
 
 export XDG_CONFIG_HOME=$HOME/.config

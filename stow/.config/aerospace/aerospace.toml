@@ -61,15 +61,16 @@ outer.top = 0
 outer.right = 0
 
 [workspace-to-monitor-force-assignment]
-B = ['^built-in retina display$', 'LEN Y44w-10']
-P = ['LEN Y44w-10', '^built-in retina display$']
-S = ['LEN Y44w-10', '^built-in retina display$']
-T = ['LEN Y44w-10', '^built-in retina display$']
-N = ['^built-in retina display$', 'LEN Y44w-10']
+B = ['LEN Y44w-10 \(2\)', '^built-in retina display$']
+P = ['LEN Y44w-10 \(2\)', '^built-in retina display$']
+S = ['^built-in retina display$']
+T = ['LEN Y44w-10 \(1\)', '^built-in retina display$']
+N = ['LEN Y44w-10 \(2\)', '^built-in retina display$']
 1 = ['^built-in retina display$', 'LEN Y44w-10']
 2 = ['^built-in retina display$', 'LEN Y44w-10']
 3 = ['^built-in retina display$', 'LEN Y44w-10']
-4 = ['LEN Y44w-10', '^built-in retina display$']
+4 = ['LEN Y44w-10 \(1\)', '^built-in retina display$']
+5 = ['LEN Y44w-10 \(2\)', '^built-in retina display$']
 
 [[on-window-detected]]
 if.app-id = 'com.brave.Browser'
@@ -102,7 +103,7 @@ run = ['layout tiling', 'move-node-to-workspace 4']
 
 [[on-window-detected]]
 if.app-id = 'com.hnc.Discord'
-run = ['layout tiling', 'move-node-to-workspace 4']
+run = ['layout tiling', 'move-node-to-workspace 5']
 
 [[on-window-detected]]
 if.app-id = 'net.whatsapp.WhatsApp'

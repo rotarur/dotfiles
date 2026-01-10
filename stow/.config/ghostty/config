@@ -1755,7 +1755,7 @@ image-storage-limit = 320000000
 # paste is always enabled even if this is `false`.
 # 
 # The default value is true on Linux and macOS.
-copy-on-select = true
+# copy-on-select = clipboard
 
 # The time in milliseconds between clicks to consider a click a repeat
 # (double, triple, etc.) or an entirely new single click. A value of zero will
@@ -2524,4 +2524,4 @@ auto-update =
 # This only works on macOS since only macOS has an auto-update feature.
 auto-update-channel = 
 
-keybind = shift+enter=text:\n
+keybind = shift+enter=text:\x1b\r
