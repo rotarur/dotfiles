@@ -190,7 +190,7 @@ if ! command -v mise &>/dev/null; then
   echo "Install mise"
   curl https://mise.run | sh
   # Add mise to current shell, if not already available (may require opening a new shell)
-  export PATH="$HOME/.local/bin:$PATH"
+  export PATH="${HOME}/.local/bin:${PATH}"
 fi
 
 if [ ! -d ~/.config ]; then
@@ -253,7 +253,7 @@ if [ -f ~/.zshrc ]; then
   fi
 
   echo "Configuring zsh plugins"
-  sed '/^source\ \$ZSH\/oh-my-zsh.sh/i source\ \$HOME\/.dotfiles\/zsh\/plugins.sh' -i ~/.zshrc
+  sed '/^source\ \$ZSH\/oh-my-zsh.sh/i source\ \${HOME}\/.dotfiles\/zsh\/plugins.sh' -i ~/.zshrc
 fi
 
 source ${ZSRCDOT}

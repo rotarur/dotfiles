@@ -68,7 +68,7 @@ alias ghpmdr='gh pr merge -d -r'
 # GNU
 [[ ! -z "$(command -v gsed)" ]] && alias sed=$(which gsed)
 
-. "$HOME/.cargo/env"
+. "${HOME}/.cargo/env"
 
 # kitty aliases
 # if [ ! -z "$(command -v kitty)" ]; then
@@ -77,7 +77,7 @@ alias ghpmdr='gh pr merge -d -r'
 # source custom configurations
 # these configurations are ignored when
 # committed
-[ -f ${HOME}/.dotfiles/zsh/custom_configs.sh ] && source ${HOME}/.dotfiles/zsh/custom_configs.sh
+[ -f "${HOME}/.dotfiles/zsh/custom_configs.sh" ] && source "${HOME}/.dotfiles/zsh/custom_configs.sh"
 
 # kubectx
 alias kx='kubectx'
@@ -99,22 +99,22 @@ alias kgds='k get daemonset'
 alias kgsvc='k get service'
 alias kgscrt='k get secret'
 
-export PATH="$HOME/bin:$PATH"
-export PATH="$HOME/.local/bin:$PATH"
+export PATH="${HOME}/bin:$PATH"
+export PATH="${HOME}/.local/bin:$PATH"
 export PATH="$GOROOT/bin:$PATH"
 export PATH="$GOPATH/bin:$PATH"
 export PATH="/usr/local/opt/libpq/bin:$PATH"
-export PATH="${HOME}/.local/share/solana/install/active_release/bin:$PATH"
+export PATH="${HOME}/.local/share/solana/install/active_release/bin:${PATH}"
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
-  export PATH="${HOME}/Library/Python/2.7/bin:$PATH"
+  export PATH="${HOME}/Library/Python/2.7/bin:${PATH}"
   export PATH="/opt/homebrew/bin:$PATH"
   export PATH="/opt/homebrew/sbin:$PATH"
 
   ulimit -n 7096
 fi
 
-export XDG_CONFIG_HOME=$HOME/.config
+export XDG_CONFIG_HOME="${HOME}/.config"
 
 # reload zsh
 alias reload!='RELOAD=1 source ~/.zshrc'
@@ -123,8 +123,8 @@ alias reload!='RELOAD=1 source ~/.zshrc'
 alias gpg-restart='gpgconf --kill gpg-agent; gpgconf --launch gpg-agent'
 
 # GPG configuration
-if [ ! -d $HOME/.gnupg ]; then
-   mkdir $HOME/.gnupg
+if [ ! -d "${HOME}/.gnupg" ]; then
+   mkdir "${HOME}/.gnupg"
 fi
 
 # Set GPG_TTY only if we have a TTY
@@ -140,8 +140,8 @@ fi
 gpgconf --launch gpg-agent 2>/dev/null || true
 
 # Configure gpg to use agent (only if file doesn't exist to avoid overwriting)
-if [ ! -f ${HOME}/.gnupg/gpg.conf ] || ! grep -q "use-agent" ${HOME}/.gnupg/gpg.conf; then
-   echo -e "# Enable gpg to use the gpg-agent\nuse-agent" >> ${HOME}/.gnupg/gpg.conf
+if [ ! -f "${HOME}/.gnupg/gpg.conf" ] || ! grep -q "use-agent" "${HOME}/.gnupg/gpg.conf"; then
+   echo -e "# Enable gpg to use the gpg-agent\nuse-agent" >> "${HOME}/.gnupg/gpg.conf"
 fi
 
 eval "$(~/.local/bin/mise activate zsh)"
@@ -150,7 +150,7 @@ eval "$(~/.local/bin/mise activate zsh)"
 eval "$(zoxide init zsh)"
 alias cd="z"
 
-export PATH="$(go env GOPATH)/bin:$PATH"
+export PATH="$(go env GOPATH)/bin:${PATH}"
 
 
 eval "$(atuin init zsh)"

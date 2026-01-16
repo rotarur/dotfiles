@@ -32,8 +32,7 @@ if [ -f ~/.zshrc ]; then
    fi
 
    echo "Configuring zsh plugins"
-   sed '/^source\ \$ZSH\/oh-my-zsh.sh/i source\ \$HOME\/.dotfiles\/zsh\/plugins.sh' -i ~/.zshrc
+   sed '/^source\ \$ZSH\/oh-my-zsh.sh/i source\ \${HOME}\/.dotfiles\/zsh\/plugins.sh' -i ~/.zshrc
 fi
 
 source ${ZSRCDOT}
-
