@@ -12,5 +12,6 @@ opt.undoreload = 10000
 opt.swapfile = false
 opt.backup = false
 opt.writebackup = false
+opt.clipboard = "unnamedplus"
 -- opt.ligatures = false
 -- g.filetype = "on"
