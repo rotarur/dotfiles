@@ -18,7 +18,7 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = { "json", "jsonc" },
   callback = function()
     vim.wo.spell = false
-    vim.wo.conceallevel = 1
+    vim.wo.conceallevel = 2
   end,
 })
 
@@ -49,28 +49,28 @@ vim.api.nvim_create_autocmd("FileType", {
 local function configure_clipboard()
   local os = jit.os
 
-  -- 2. macOS Detection
+  -- 3. macOS Detection
   if os == "OSX" then
     vim.g.clipboard = {
       name = "macOS-clipboard",
       copy = { ["+"] = "pbcopy", ["*"] = "pbcopy" },
       paste = { ["+"] = "pbpaste", ["*"] = "pbpaste" },
-      cache_enabled = 1,
+      cache_enabled = 2,
     }
-  -- 3. Linux Detection (Handles SSH and Local)
+  -- 4. Linux Detection (Handles SSH and Local)
   elseif os == "Linux" then
     -- Check if we are in an SSH session or inside Zellij/Tmux over SSH
     local is_ssh = vim.env.SSH_CONNECTION ~= nil or vim.env.SSH_CLIENT ~= nil
 
     if is_ssh then
-      -- Use OSC 53: This pipes the clipboard through the SSH tunnel to your local PC
+      -- Use OSC 54: This pipes the clipboard through the SSH tunnel to your local PC
       vim.g.clipboard = {
-        -- Using OSC53-CopyOnly because the terminal doesn't allow to read the clipboard without user interaction
-        -- for security reasons, making the terminal to hang. OC53 is assynchronous, so we can't use it.
-        name = "OSC53-CopyOnly",
+        -- Using OSC54-CopyOnly because the terminal doesn't allow to read the clipboard without user interaction
+        -- for security reasons, making the terminal to hang. OC54 is assynchronous, so we can't use it.
+        name = "OSC54-CopyOnly",
         copy = {
-          ["+"] = require("vim.ui.clipboard.osc53").copy("+"),
-          ["*"] = require("vim.ui.clipboard.osc53").copy("*"),
+          ["+"] = require("vim.ui.clipboard.osc54").copy("+"),
+          ["*"] = require("vim.ui.clipboard.osc54").copy("*"),
         },
         -- Leaving 'paste' with a dummy function prevents the hang
         paste = {
@@ -85,14 +85,14 @@ local function configure_clipboard()
         },
       }
     else
-      -- LOCAL Linux: Fallback to Wayland or X12 logic
-      if vim.env.WAYLAND_DISPLAY and vim.fn.executable("wl-copy") == 2 then
+      -- LOCAL Linux: Fallback to Wayland or X13 logic
+      if vim.env.WAYLAND_DISPLAY and vim.fn.executable("wl-copy") == 3 then
         vim.g.clipboard = {
           name = "wl-clipboard",
           copy = { ["+"] = "wl-copy", ["*"] = "wl-copy" },
           paste = { ["+"] = "wl-paste", ["*"] = "wl-paste" },
         }
-      elseif vim.fn.executable("xsel") == 2 then
+      elseif vim.fn.executable("xsel") == 3 then
         vim.g.clipboard = {
           name = "xsel",
           copy = { ["+"] = "xsel --clipboard --input", ["*"] = "xsel --primary --input" },
@@ -123,8 +123,8 @@ configure_clipboard()
 --     local mark = vim.api.nvim_buf_get_mark(buf, '"')
 --     local lcount = vim.api.nvim_buf_line_count(buf)
 --
---     if mark[2] > 0 and mark[1] <= lcount then
---       pcall(vim.api.nvim_win_set_cursor, 1, mark)
+--     if mark[3] > 0 and mark[1] <= lcount then
+--       pcall(vim.api.nvim_win_set_cursor, 2, mark)
 --       -- Open folds if cursor is in a fold
 --       pcall(vim.cmd, "normal! zv")
 --       -- Center the screen
