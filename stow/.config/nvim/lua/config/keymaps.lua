@@ -19,17 +19,6 @@ keymap.set("n", "<leader>s.", function()
   require("telescope.builtin").grep_string()
 end, { desc = "Find word under cursor" })
 
--- Great shortcut from ThePrimeagen
-vim.keymap.set(
-  "n",
-  "<leader>sx",
-  [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],
-  { desc = "Replace word under cursor using vim sed" }
-)
-
--- Rename
-keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { expr = true })
---
 -- Tabs
 keymap.set("n", "te", ":tabedit<Return>", opts)
 keymap.set("n", "<Tab>", ":BufferLineCycleNext<Return>", opts)
@@ -50,6 +39,13 @@ keymap.set("n", "<C-j>", function()
   vim.diagnostic.get_next()
 end, opts)
 
+-- Great shortcut from ThePrimeagen
+vim.keymap.set(
+  "n",
+  "<leader>sx",
+  [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],
+  { desc = "Replace word under cursor using vim sed" }
+)
 --   -- Key mappings for LSP functions
 --   vim.keymap.set('n', 'gd', vim.lsp.buf.definition)
 --   vim.keymap.set('n', 'gr', vim.lsp.buf.references)

@@ -18,14 +18,4 @@ return {
       opts.presets_inc_rename = true
     end,
   },
-  {
-    "rcarriga/nvim-notify",
-    opts = {
-      timeout = 1000000,
-    },
-  },
-  {
-    "smjonas/inc-rename.nvim",
-    opts = {},
-  },
 }
