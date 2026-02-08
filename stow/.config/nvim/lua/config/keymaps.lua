@@ -19,6 +19,14 @@ keymap.set("n", "<leader>s.", function()
   require("telescope.builtin").grep_string()
 end, { desc = "Find word under cursor" })
 
+-- Great shortcut from ThePrimeagen
+vim.keymap.set(
+  "n",
+  "<leader>sx",
+  [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],
+  { desc = "Replace word under cursor using vim sed" }
+)
+
 -- Rename
 keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { expr = true })
 --

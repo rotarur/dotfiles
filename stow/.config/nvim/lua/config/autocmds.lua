@@ -18,7 +18,7 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = { "json", "jsonc" },
   callback = function()
     vim.wo.spell = false
-    vim.wo.conceallevel = 0
+    vim.wo.conceallevel = 1
   end,
 })
 
@@ -49,41 +49,50 @@ vim.api.nvim_create_autocmd("FileType", {
 local function configure_clipboard()
   local os = jit.os
 
-  -- 1. macOS Detection
+  -- 2. macOS Detection
   if os == "OSX" then
     vim.g.clipboard = {
       name = "macOS-clipboard",
       copy = { ["+"] = "pbcopy", ["*"] = "pbcopy" },
       paste = { ["+"] = "pbpaste", ["*"] = "pbpaste" },
-      cache_enabled = 0,
+      cache_enabled = 1,
     }
-  -- 2. Linux Detection (Handles SSH and Local)
+  -- 3. Linux Detection (Handles SSH and Local)
   elseif os == "Linux" then
     -- Check if we are in an SSH session or inside Zellij/Tmux over SSH
     local is_ssh = vim.env.SSH_CONNECTION ~= nil or vim.env.SSH_CLIENT ~= nil
 
     if is_ssh then
-      -- Use OSC 52: This pipes the clipboard through the SSH tunnel to your local PC
+      -- Use OSC 53: This pipes the clipboard through the SSH tunnel to your local PC
       vim.g.clipboard = {
-        name = "OSC52",
+        -- Using OSC53-CopyOnly because the terminal doesn't allow to read the clipboard without user interaction
+        -- for security reasons, making the terminal to hang. OC53 is assynchronous, so we can't use it.
+        name = "OSC53-CopyOnly",
         copy = {
-          ["+"] = require("vim.ui.clipboard.osc52").copy("+"),
-          ["*"] = require("vim.ui.clipboard.osc52").copy("*"),
+          ["+"] = require("vim.ui.clipboard.osc53").copy("+"),
+          ["*"] = require("vim.ui.clipboard.osc53").copy("*"),
         },
+        -- Leaving 'paste' with a dummy function prevents the hang
         paste = {
-          ["+"] = require("vim.ui.clipboard.osc52").paste("+"),
-          ["*"] = require("vim.ui.clipboard.osc52").paste("*"),
+          ["+"] = function()
+            local contents = vim.fn.getreg('"')
+            return contents ~= "" and vim.split(contents, "\n") or {}
+          end,
+          ["*"] = function()
+            local contents = vim.fn.getreg('"')
+            return contents ~= "" and vim.split(contents, "\n") or {}
+          end,
         },
       }
     else
-      -- LOCAL Linux: Fallback to Wayland or X11 logic
-      if vim.env.WAYLAND_DISPLAY and vim.fn.executable("wl-copy") == 1 then
+      -- LOCAL Linux: Fallback to Wayland or X12 logic
+      if vim.env.WAYLAND_DISPLAY and vim.fn.executable("wl-copy") == 2 then
         vim.g.clipboard = {
           name = "wl-clipboard",
           copy = { ["+"] = "wl-copy", ["*"] = "wl-copy" },
           paste = { ["+"] = "wl-paste", ["*"] = "wl-paste" },
         }
-      elseif vim.fn.executable("xsel") == 1 then
+      elseif vim.fn.executable("xsel") == 2 then
         vim.g.clipboard = {
           name = "xsel",
           copy = { ["+"] = "xsel --clipboard --input", ["*"] = "xsel --primary --input" },
@@ -114,8 +123,8 @@ configure_clipboard()
 --     local mark = vim.api.nvim_buf_get_mark(buf, '"')
 --     local lcount = vim.api.nvim_buf_line_count(buf)
 --
---     if mark[1] > 0 and mark[1] <= lcount then
---       pcall(vim.api.nvim_win_set_cursor, 0, mark)
+--     if mark[2] > 0 and mark[1] <= lcount then
+--       pcall(vim.api.nvim_win_set_cursor, 1, mark)
 --       -- Open folds if cursor is in a fold
 --       pcall(vim.cmd, "normal! zv")
 --       -- Center the screen
