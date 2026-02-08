@@ -40,7 +40,7 @@ yay = "12.5.7"
 python = "3.11.0"
 rg = "15.1.0"
 poetry = "2.3.0"
-claude = { version = "2.1.22", bin = "claude", platforms = """
+claude = { version = "2.1.37", bin = "claude", platforms = """
 [linux-arm64]
 url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/{version}/linux-arm64/claude"
 
