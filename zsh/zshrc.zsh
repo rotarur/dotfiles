@@ -22,8 +22,9 @@ OLLAMA_HOST="0.0.0.0"
 
 # use nvim
 [[ ! -z "$(command -v nvim)" ]] && alias vim='nvim'; alias vi='nvim'
-[[ ! -z "$(command -v nvim)" ]] && export EDITOR='vim'
+[[ ! -z "$(command -v nvim)" ]] && export EDITOR='nvim'; export VISUAL='nvim'
 [[ ! -z "$(command -v nvim)" ]] && export GIT_EDITOR='vim'
+[[ ! -z "$(command -v ranger)" ]] && export rn='ranger'
 
 # fzf
 # [[ -f ~/.fzf.zsh ]] && source ~/.fzf.zsh
@@ -39,6 +40,15 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   alias zed='open -a /Applications/Zed.app/Contents/MacOS/zed "$@"'
   alias watcha='watch -d -n 1 '
 fi
+
+# if [[ "$OSTYPE" == "linux-gnu" ]]; then
+# fi
+
+# for sway create an alias to run appliactions with nivida card, sway runs on integrated gpu
+if [[ "$DESKTOP_SESSION" == "sway" ]]; then
+  alias nvidia-run='__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia'
+fi
+
 alias zj='zellij options --theme gruvbox-dark'
 alias myip='curl ipinfo.io'
 
