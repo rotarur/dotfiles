@@ -63,7 +63,8 @@ local function configure_clipboard()
     local is_ssh = vim.env.SSH_CONNECTION ~= nil or vim.env.SSH_CLIENT ~= nil
 
     if is_ssh then
-      -- Use OSC 52: This pipes the clipboard through the SSH tunnel to your local PC
+      -- Use OSC 52 for copy only - paste reads from internal registers
+      -- This avoids slow/hanging clipboard reads over SSH
       vim.g.clipboard = {
         name = "OSC52",
         copy = {
@@ -71,8 +72,10 @@ local function configure_clipboard()
           ["*"] = require("vim.ui.clipboard.osc52").copy("*"),
         },
         paste = {
-          ["+"] = require("vim.ui.clipboard.osc52").paste("+"),
-          ["*"] = require("vim.ui.clipboard.osc52").paste("*"),
+          -- Read from yank register (0) to avoid circular dependency
+          -- Note: pasting from external clipboard won't work in SSH - this is the trade-off
+          ["+"] = function() return vim.split(vim.fn.getreg("0"), "\n") end,
+          ["*"] = function() return vim.split(vim.fn.getreg("0"), "\n") end,
         },
       }
     else
