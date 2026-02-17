@@ -1,0 +1,10 @@
+#input {
+  border-radius: 0;
+}
+
+#outer-box {
+  padding: 4px;
+  font-size: 1.3rem;
+  font-family: "JetBrains Mono","Droid Sans Serif",serif;
+}
+
