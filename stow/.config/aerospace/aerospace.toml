@@ -61,16 +61,18 @@ outer.top = 0
 outer.right = 0
 
 [workspace-to-monitor-force-assignment]
-B = ['LEN Y44w-10 \(2\)', '^built-in retina display$']
+B = ['LEN Y44w-10 \(1\)', '^built-in retina display$']
 P = ['LEN Y44w-10 \(2\)', '^built-in retina display$']
 S = ['^built-in retina display$']
-T = ['LEN Y44w-10 \(1\)', '^built-in retina display$']
+T = ['LEN Y44w-10 \(2\)', '^built-in retina display$']
 N = ['LEN Y44w-10 \(2\)', '^built-in retina display$']
 1 = ['^built-in retina display$', 'LEN Y44w-10']
 2 = ['^built-in retina display$', 'LEN Y44w-10']
 3 = ['^built-in retina display$', 'LEN Y44w-10']
-4 = ['LEN Y44w-10 \(1\)', '^built-in retina display$']
-5 = ['LEN Y44w-10 \(2\)', '^built-in retina display$']
+4 = ['LEN Y44w-10 \(2\)', '^built-in retina display$']
+5 = ['LEN Y44w-10 \(1\)', '^built-in retina display$']
+# X = ['MSI MP161 E2','LEN Y44w-10 \(2\)', '^built-in retina display$']
+X = ['MSI MP161 E2']
 
 [[on-window-detected]]
 if.app-id = 'com.brave.Browser'
@@ -204,7 +206,7 @@ alt-t = 'workspace T' # Terminal
 # alt-u = 'workspace U'
 # alt-v = 'workspace V'
 # alt-w = 'workspace W'
-# alt-x = 'workspace X'
+alt-x = 'workspace X' # MSI monitor
 # alt-y = 'workspace Y'
 # alt-z = 'workspace Z'
 
@@ -237,7 +239,7 @@ alt-shift-t = 'move-node-to-workspace T'
 # alt-shift-u = 'move-node-to-workspace U'
 # alt-shift-v = 'move-node-to-workspace V'
 # alt-shift-w = 'move-node-to-workspace W'
-# alt-shift-x = 'move-node-to-workspace X'
+alt-shift-x = 'move-node-to-workspace X'
 # alt-shift-y = 'move-node-to-workspace Y'
 # alt-shift-z = 'move-node-to-workspace Z'
 
