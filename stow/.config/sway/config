@@ -94,7 +94,7 @@ input type:keyboard {
   # Capslock key should work as escape key
   # See /usr/share/X11/xkb/rules/xorg.lst for options
   xkb_variant ,nodeadkeys
-  # move control to capslock
+  # move control to capslock, super also acts as ctrl
   xkb_options ctrl:nocaps
   xkb_layout gb
   repeat_delay 200
@@ -119,6 +119,13 @@ input type:touchpad {
 input type:pointer {
   accel_profile adaptive
   # accel_factor 0.0
+  tap enabled
+  middle_emulation enabled
+}
+
+input type:pointer {
+  accel_profile adaptive
+  accel_factor 0.0
   tap enabled
   middle_emulation enabled
 }
