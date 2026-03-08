@@ -13,7 +13,7 @@ set $up k
 set $right l
 
 # Browser
-set $browser brave
+set $browser brave-browser
 
 # File manager
 set $file flatpak run io.github.sxyazi.yazi
@@ -23,22 +23,18 @@ set $term flatpak run org.wezfurlong.wezterm
 bindsym $mod+Return exec $term
 
 # Menu
-set $wofi_theme "Arc-Dark"
-set $menu wofi --show=drun --lines=10 --theme $wofi_theme --prompt="Search" --allow-images --allow-markup -i
+set $menu wofi --show=drun --lines=10 --prompt="Search" --allow-images --allow-markup -i
 
 # Lock
 set $lock swaylock -i $HOME/Pictures/lockscreen.jpg --scaling fill -u
 
 # Gaps
 gaps inner 0
-gaps outer 30
-smart_gaps on
+gaps outer 0
 
 # Borders
-hide_edge_borders smart
-default_border pixel 2
-default_floating_border pixel 2
-smart_borders on
+default_border none
+default_floating_border none
 
 ### Output configuration
 #
@@ -46,30 +42,35 @@ smart_borders on
 # Requires: desktop-backgrounds-compat, swaybg
 output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1136x640.png fill
 
-#
+# Monitors
+workspace 1 output eDP-1
+workspace 2 output DP-3
+workspace 3 output DP-4
+workspace 4 output DP-3
+workspace 5 output DP-4
+
 # Example configuration:
 #
 #   output HDMI-A-1 resolution 1920x1080 position 1920,0
 #
 # You can get the names of your outputs by running: swaymsg -t get_outputs
 
-### Idle configuration
-#
-# Example configuration:
-#
-# exec swayidle -w \
-#          timeout 300 'swaylock -f -c 000000' \
-#          timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
-#          before-sleep 'swaylock -f -c 000000'
-
+# Startup applications
 exec swayidle -w \
-    timeout 300 'swaylock -f' \
+    timeout 300 'swaylock -f -i ~/.config/sway/lockscreen.jpg --scaling fill -u' \
     timeout 360 'swaymsg "output * power off"' \
     resume 'swaymsg "output * power on"' \
     timeout 600 'systemctl suspend' \
-    before-sleep 'swaylock -f'
+    before-sleep 'swaylock -f -i ~/Pictures/lockscreen.jpg --scaling fill -u'
 
 exec dunst
+# "foreign_toplevel_identifier": "4cf06db369fd00261ae7d6fe55dce33a"
+for_window [app_id="brave-browser"] move to workspace number 3
+exec brave-browser
+assign [app_id="wezterm"] workspace number 2
+exec wezterm
+assign [class="Slack"] workspace number 1
+exec sleep 3 && flatpak run com.slack.Slack
 
 # This will lock your screen after 300 seconds of inactivity, then turn off
 # your displays after another 300 seconds, and turn your screens back on when
@@ -102,9 +103,23 @@ input type:keyboard {
 
 input type:touchpad {
   # disable while typing
-  dwt enabled
-  tap enabled
+  dwt enabled              # disable while typing
+  tap enabled              # tap to click
+  drag enabled             # tap-and-drag enabled
+  drag_lock disabled       # disable drag lock
   natural_scroll enabled
+  middle_emulation enabled
+  pointer_accel 0.3        # from -1.0 to 1.0
+  scroll_method two_finger
+  click_method clickfinger # 2-finger = right, 3-finger = middle
+  tap_button_map lrm       # 1-finger=left, 2=right, 3=middle
+  accel_profile adaptive   # or flat
+}
+
+input type:pointer {
+  accel_profile adaptive
+  # accel_factor 0.0
+  tap enabled
   middle_emulation enabled
 }
 
@@ -202,6 +217,9 @@ bindsym XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
 bindsym XF86MonBrightnessUp exec brightnessctl set +5%
 bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
 
+bindsym Print exec grim ~/Pictures/screenshot-$(date +%Y%m%d-%H%M%S).png
+bindsym Shift+Print exec grim -g "$(slurp)" ~/Pictures/screenshot-$(date +%Y%m%d-%H%M%S).png
+
 # Switch the current container between different layout styles
 bindsym $mod+s layout stacking
 bindsym $mod+w layout tabbed
@@ -218,6 +236,7 @@ bindsym $mod+space focus mode_toggle
 
 # Move focus to the parent container
 bindsym $mod+a focus parent
+
 #
 # Scratchpad:
 #
@@ -264,6 +283,7 @@ primary_selection disabled
 
 xwayland enable
 exec systemctl --user import-environment DISPLAY WAYLAND_DISPLAY
+exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
 
 # Include configs from 3 locations:
 #  - /usr/share/sway/config.d
@@ -287,6 +307,6 @@ exec systemctl --user import-environment DISPLAY WAYLAND_DISPLAY
 # the trick, it's all in the `wordexp(3)`.
 #
 
-# exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+# exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway (moved earlier)
 
 include '$(/usr/libexec/sway/layered-include "/usr/share/sway/config.d/*.conf" "/etc/sway/config.d/*.conf" "${XDG_CONFIG_HOME:-${HOME}/.config}/sway/config.d/*.conf")'
