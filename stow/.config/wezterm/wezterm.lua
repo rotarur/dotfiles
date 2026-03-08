@@ -4,7 +4,7 @@ local config = wezterm.config_builder()
 
 config.font = wezterm.font("FiraCode Retina")
 
-config.font_size = 18
+config.font_size = 12
 
 config.color_scheme = "s3r0 modified (terminal.sexy)"
 
@@ -38,19 +38,6 @@ config.scrollback_lines = 200000000
 
 local act = wezterm.action
 
-config.mouse_bindings = {
-	{
-		event = { Down = { streak = 1, button = "Middle" } },
-		mods = "NONE",
-		action = act({ PasteFrom = "Clipboard" }),
-	},
-	{
-		event = { Down = { streak = 2, button = "Right" } },
-		mods = "NONE",
-		action = act({ CopyTo = "Clipboard" }),
-	},
-}
-
 -- config.mouse_bindings = {
 -- 	-- Double-click to select and copy
 -- 	{
@@ -60,17 +47,18 @@ config.mouse_bindings = {
 -- 	},
 -- }
 
+config.leader = { key = "a", mods = "CTRL", timeout_milliseconds = 1000 }
 config.keys = {
 	{
 		key = ",",
-		mods = "CMD",
+		mods = "CTRL",
 		action = act.SpawnCommandInNewTab({
 			cwd = os.getenv("WEZTERM_CONFIG_DIR"),
 			set_environment_variables = {
 				TERM = "screen-256color",
 			},
 			args = {
-				"vi",
+				"nvim",
 				os.getenv("WEZTERM_CONFIG_FILE"),
 			},
 		}),
@@ -78,27 +66,48 @@ config.keys = {
 	-- other keys
 	-- { key = 'LeftArrow', mods = 'OPT', action = act.SendString '\033b', },
 	-- Make Option-Left equivalent to Alt-b which many line editors interpret as backward-word
-	{ key = "LeftArrow", mods = "OPT", action = act.SendString("\x1bb") },
-	-- Make Option-Right equivalent to Alt-f; forward-word
-	{ key = "RightArrow", mods = "OPT", action = act.SendString("\x1bf") },
-	-- Make CMD + a to move to the beginig of the line
-	{ key = "LeftArrow", mods = "CMD", action = act.SendKey({ key = "a", mods = "CTRL" }) },
-	-- Make CMD + a to move to the beginig of the line
-	{ key = "RightArrow", mods = "CMD", action = act.SendKey({ key = "e", mods = "CTRL" }) },
-	{ key = "m", mods = "CTRL", action = act.DisableDefaultAssignment },
+	-- { key = "LeftArrow", mods = "OPT", action = act.SendString("\x1bb") },
+	-- -- Make Option-Right equivalent to Alt-f; forward-word
+	-- { key = "RightArrow", mods = "OPT", action = act.SendString("\x1bf") },
+	-- -- Make CMD + a to move to the beginig of the line
+	-- { key = "LeftArrow", mods = "CMD", action = act.SendKey({ key = "a", mods = "CTRL" }) },
+	-- -- Make CMD + a to move to the beginig of the line
+	-- { key = "RightArrow", mods = "CMD", action = act.SendKey({ key = "e", mods = "CTRL" }) },
+	-- { key = "m", mods = "CTRL", action = act.DisableDefaultAssignment },
 	-- Turn off the default CMD-m Hide action, allowing CMD-m to
 	-- be potentially recognized and handled by the tab
-	{ key = "m", mods = "CMD", action = act.DisableDefaultAssignment },
-	-- {
-	-- 	key = "-",
-	-- 	mods = "CTRL|CMD",
-	-- 	action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }),
-	-- },
-	-- {
-	-- 	key = "/",
-	-- 	mods = "CTRL|CMD",
-	-- 	action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }),
-	-- },
+	-- { key = "m", mods = "CMD", action = act.DisableDefaultAssignment },
+	{
+		key = "-",
+		mods = "CTRL",
+		action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }),
+	},
+	{
+		key = "\\",
+		mods = "CTRL",
+		action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }),
+	},
+	{
+		key = "k",
+		mods = "CTRL|SHIFT",
+		action = act.ActivatePaneDirection("Up"),
+	},
+	{
+		key = "j",
+		mods = "CTRL|SHIFT",
+		action = act.ActivatePaneDirection("Down"),
+	},
+	{
+		key = "l",
+		mods = "CTRL|SHIFT",
+		action = act.ActivatePaneDirection("Right"),
+	},
+	{
+		key = "h",
+		mods = "CTRL|SHIFT",
+		action = act.ActivatePaneDirection("Left"),
+	},
+
 	-- {
 	-- 	key = "h",
 	-- 	mods = "CTRL",
@@ -123,9 +132,17 @@ config.keys = {
 
 config.mouse_bindings = {
 	{
+		event = { Down = { streak = 1, button = "Middle" } },
+		mods = "NONE",
+		action = act({ PasteFrom = "Clipboard" }),
+	},
+	{
 		event = { Down = { streak = 1, button = "Right" } },
 		mods = "NONE",
-		action = act({ CopyTo = "Clipboard" }),
+		action = act.Multiple({
+			act.CopyTo("Clipboard"),
+			act.ClearSelection,
+		}),
 	},
 }
 -- { key = 'UpArrow',    mods = 'SHIFT', action = act.ActivatePaneDirection 'Up' },
