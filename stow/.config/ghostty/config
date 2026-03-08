@@ -46,10 +46,10 @@
 # this within config files if you want to clear previously set values in
 # configuration files or on the CLI if you want to clear values set on the
 # CLI.
-font-family = Fira Code Retina
-font-family-bold = Adwaita Sans Bold
-font-family-italic = Adwaita Sans Italic
-font-family-bold-italic = Adwaita Sans Bold Italic
+# font-family = Fira Code Retina
+# font-family-bold = Fira Code Bold
+# font-family-italic = Adwaita Sans
+# font-family-bold-italic = Adwaita Sans
 # The named font style to use for each of the requested terminal font styles.
 # This looks up the style based on the font style string advertised by the
 # font itself. For example, "Iosevka Heavy" has a style of "Heavy".
@@ -139,7 +139,7 @@ font-feature = +feat
 # On Linux with GTK, font size is scaled according to both display-wide and
 # text-specific scaling factors, which are often managed by your desktop
 # environment (e.g. the GNOME display scale and large text settings).
-font-size = 16
+font-size = 12
 
 # A repeatable configuration to set one or more font variations values for
 # a variable font. A variable font is a single font, usually with a filename
