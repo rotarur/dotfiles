@@ -87,16 +87,6 @@
   background-color: transparent;
 }
 
-#memory.warning,
-#disk.warning {
-  color: @base09;
-}
-
-#memory.critical,
-#disk.critical {
-  color: @base08;
-}
-
 #temperature.critical {
   color: @base0F;
 }
