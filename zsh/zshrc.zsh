@@ -10,8 +10,6 @@ setopt INC_APPEND_HISTORY     # Write to the history file immediately, not when 
 # setopt SHARE_HISTORY          # Share history between all sessions.
 setopt HIST_REDUCE_BLANKS     # Remove superfluous blanks from each command line being added to the history.
 
-WEZTERM_IN_TMUX=1
-
 HISTSIZE=10000000
 SAVEHIST=10000000
 HISTORY_IGNORE="(ls|cd|pwd|exit|cd)*"
@@ -19,6 +17,9 @@ HISTORY_IGNORE="(ls|cd|pwd|exit|cd)*"
 DISABLE_UNTRACKED_FILES_DIRTY="true"
 
 OLLAMA_HOST="0.0.0.0"
+
+# wezterm
+[[ ! -z "$(command -v wezterm)" ]] && export WEZTERM_IN_TMUX=1; export WEZTERM_CONFIG_FILE="${HOME}/.config/wezterm/wezterm.lua"; export WEZTERM_CONFIG_DIR="${HOME}/.config/wezterm"
 
 # use nvim
 [[ ! -z "$(command -v nvim)" ]] && alias vim='nvim'; alias vi='nvim'
