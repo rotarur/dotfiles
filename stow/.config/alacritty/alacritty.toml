@@ -33,11 +33,11 @@ LC_ALL = "en_US.UTF-8"
 size = 18
 
 [font.bold]
-family = "FiraCode Nerd Font Mono Med"
+family = "FiraCode Nerd Font Mono"
 style = "Bold"
 
 [font.italic]
-family = "FiraCode Nerd Font Mono Med"
+family = "FiraCode Nerd Font Mono"
 style = "Italic"
 
 [font.normal]
