@@ -2,7 +2,7 @@ local wezterm = require("wezterm")
 
 local config = wezterm.config_builder()
 
-config.font = wezterm.font("FiraCode Retina")
+config.font = wezterm.font("JetBrains Mono")
 
 config.font_size = 12
 
@@ -13,6 +13,11 @@ config.enable_tab_bar = false
 config.window_decorations = "RESIZE"
 
 config.enable_csi_u_key_encoding = true
+
+-- config.front_end = "WebGpu" -- or try "OpenGL"
+config.front_end = "OpenGL" -- or try "OpenGL"
+config.enable_wayland = true
+config.dpi = 96.0 -- adjust to match your display, or try 192 for HiDPI
 
 -- config.colors = {
 -- 	background = "#282828",
@@ -26,7 +31,7 @@ config.enable_csi_u_key_encoding = true
 -- 	brights = { "#214969", "#E52E2E", "#44FFB1", "#FFE073", "#A277FF", "#a277ff", "#24EAF7", "#24EAF7" },
 -- }
 
-config.window_background_opacity = 100
+config.window_background_opacity = 1.0
 config.macos_window_background_blur = 10
 
 -- disable ligatures

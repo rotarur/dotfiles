@@ -41,8 +41,8 @@
       "8": "8",
       "9": "9",
       "focused": "󱓻",
-      "urgent": "",
-      "default": ""
+      "urgent": ""
+      // "default": ""
     },
     "persistent-workspaces": {
       "1": [
