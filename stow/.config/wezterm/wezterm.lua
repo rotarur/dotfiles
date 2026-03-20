@@ -82,6 +82,7 @@ config.keys = {
 	-- Turn off the default CMD-m Hide action, allowing CMD-m to
 	-- be potentially recognized and handled by the tab
 	-- { key = "m", mods = "CMD", action = act.DisableDefaultAssignment },
+	{ key = "t", mods = "SUPER", action = act.DisableDefaultAssignment },
 	{
 		key = "-",
 		mods = "CTRL",

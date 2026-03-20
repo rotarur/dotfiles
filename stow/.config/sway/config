@@ -42,6 +42,8 @@ default_floating_border none
 # Requires: desktop-backgrounds-compat, swaybg
 output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1136x640.png fill
 
+output * adaptive_sync off
+
 # Monitors
 workspace 1 output eDP-1
 workspace 2 output DP-3
@@ -126,7 +128,7 @@ input type:pointer {
 
 input type:pointer {
   accel_profile adaptive
-  accel_factor 0.0
+  # accel_factor 0.0
   tap enabled
   middle_emulation enabled
 }
@@ -194,7 +196,7 @@ bindsym $mod+6 workspace number 6
 bindsym $mod+7 workspace number 7
 bindsym $mod+8 workspace number 8
 bindsym $mod+9 workspace number 9
-bindsym $mod+0 workspace number 10
+
 # Move focused container to workspace
 bindsym $mod+Shift+1 move container to workspace number 1
 bindsym $mod+Shift+2 move container to workspace number 2
@@ -206,6 +208,7 @@ bindsym $mod+Shift+7 move container to workspace number 7
 bindsym $mod+Shift+8 move container to workspace number 8
 bindsym $mod+Shift+9 move container to workspace number 9
 bindsym $mod+Shift+0 move container to workspace number 10
+
 # Note: workspaces can have any name you want, not just numbers.
 # We just use 1-10 as the default.
 #
@@ -226,7 +229,7 @@ bindsym XF86MonBrightnessUp exec brightnessctl set +5%
 bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
 
 bindsym Print exec grim ~/Pictures/screenshot-$(date +%Y%m%d-%H%M%S).png
-bindsym Shift+Print exec grim -g "$(slurp)" ~/Pictures/screenshot-$(date +%Y%m%d-%H%M%S).png
+bindsym Shift+Print exec grim -g "$(slurp)" - | satty --filename -
 
 # Switch the current container between different layout styles
 bindsym $mod+s layout stacking
