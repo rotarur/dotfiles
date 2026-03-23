@@ -24,7 +24,7 @@ OLLAMA_HOST="0.0.0.0"
 # use nvim
 [[ ! -z "$(command -v nvim)" ]] && alias vim='nvim'; alias vi='nvim'
 [[ ! -z "$(command -v nvim)" ]] && export EDITOR='nvim'; export VISUAL='nvim'
-[[ ! -z "$(command -v nvim)" ]] && export GIT_EDITOR='vim'
+[[ ! -z "$(command -v nvim)" ]] && export GIT_EDITOR='nvim'
 [[ ! -z "$(command -v ranger)" ]] && export rn='ranger'
 
 # fzf

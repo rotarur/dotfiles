@@ -63,19 +63,35 @@ local function configure_clipboard()
     local is_ssh = vim.env.SSH_CONNECTION ~= nil or vim.env.SSH_CLIENT ~= nil
 
     if is_ssh then
-      -- Use OSC 52 for copy only - paste reads from internal registers
-      -- This avoids slow/hanging clipboard reads over SSH
+      -- Cache clipboard content locally so internal plugins (e.g. snacks explorer)
+      -- can write and read back from + register within the same session.
+      -- OSC 52 is still used to sync to the terminal clipboard on copy.
+      local ssh_clipboard = { ["+"] = nil, ["*"] = nil }
+      local osc52_copy_plus = require("vim.ui.clipboard.osc52").copy("+")
+      local osc52_copy_star = require("vim.ui.clipboard.osc52").copy("*")
       vim.g.clipboard = {
         name = "OSC52",
         copy = {
-          ["+"] = require("vim.ui.clipboard.osc52").copy("+"),
-          ["*"] = require("vim.ui.clipboard.osc52").copy("*"),
+          ["+"] = function(lines, regtype)
+            ssh_clipboard["+"] = lines
+            osc52_copy_plus(lines, regtype)
+          end,
+          ["*"] = function(lines, regtype)
+            ssh_clipboard["*"] = lines
+            osc52_copy_star(lines, regtype)
+          end,
         },
         paste = {
-          -- Read from yank register (0) to avoid circular dependency
-          -- Note: pasting from external clipboard won't work in SSH - this is the trade-off
-          ["+"] = function() return vim.split(vim.fn.getreg("0"), "\n") end,
-          ["*"] = function() return vim.split(vim.fn.getreg("0"), "\n") end,
+          -- Return cached clipboard content if available, otherwise fall back to last yank.
+          -- Note: pasting from external programs won't work in SSH - this is the trade-off.
+          ["+"] = function()
+            if ssh_clipboard["+"] then return ssh_clipboard["+"] end
+            return vim.split(vim.fn.getreg("0"), "\n")
+          end,
+          ["*"] = function()
+            if ssh_clipboard["*"] then return ssh_clipboard["*"] end
+            return vim.split(vim.fn.getreg("0"), "\n")
+          end,
         },
       }
     else
