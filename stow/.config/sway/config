@@ -74,6 +74,7 @@ exec wezterm
 assign [class="Slack"] workspace number 1
 exec sleep 3 && flatpak run com.slack.Slack
 exec lxpolkit
+exec wl-scroll -s 2.0
 
 # This will lock your screen after 300 seconds of inactivity, then turn off
 # your displays after another 300 seconds, and turn your screens back on when
@@ -112,7 +113,7 @@ input type:touchpad {
   drag_lock disabled       # disable drag lock
   natural_scroll enabled
   middle_emulation enabled
-  pointer_accel 0.3        # from -1.0 to 1.0
+  pointer_accel 0.1       # from -1.0 to 1.0
   scroll_method two_finger
   click_method clickfinger # 2-finger = right, 3-finger = middle
   tap_button_map lrm       # 1-finger=left, 2=right, 3=middle
