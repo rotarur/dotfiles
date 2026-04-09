@@ -80,8 +80,8 @@
   "clock": {
     //"tooltip-format": "{calendar}\n\n<span color='#ebdbb2'>{tz_list}</span>",
     //"format": "<span foreground='#928374'></span> {:%a, %d %b  <span foreground='#928374'></span> %H:%M}",
-    "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-    "format-alt": "{:%Y-%m-%d}",
+    "format": "{:%Y/%m/%d  %H:%M}",
+    "tooltip-format": "<big>{:%Y %B}</big>\n<tt><span size='x-large'>{calendar}</span></tt>",
     "timezones": [
       "Europe/Lisbon"
     ],
