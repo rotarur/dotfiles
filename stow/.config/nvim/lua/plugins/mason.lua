@@ -14,7 +14,7 @@ return {
         -- you can turn off/on auto_update per tool
         -- { "bash-language-server", auto_update = true },
 
-        -- "lua-language-server",
+        "lua-language-server",
         -- "vim-language-server",
         -- "gopls",
         -- "golangci-lint",

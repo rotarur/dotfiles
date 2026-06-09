@@ -44,6 +44,33 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+-- Ensure exactly one trailing blank line on save (collapse duplicates, add if missing).
+-- Deferred so it registers after LazyVim's format-on-save hook and therefore runs
+-- *after* the formatter, which would otherwise strip the blank line back out.
+vim.schedule(function()
+  vim.api.nvim_create_autocmd("BufWritePre", {
+    pattern = "*",
+    callback = function()
+      if vim.bo.buftype ~= "" then
+        return
+      end
+      local buf = 0
+      local n = vim.api.nvim_buf_line_count(buf)
+      local last = n
+      while last > 0 and vim.api.nvim_buf_get_lines(buf, last - 1, last, false)[1] == "" do
+        last = last - 1
+      end
+      if last == 0 then
+        return -- buffer is entirely blank, leave it alone
+      end
+      if last ~= n - 1 then
+        vim.api.nvim_buf_set_lines(buf, last, n, false, { "" })
+      end
+    end,
+    desc = "Ensure exactly one trailing blank line on save",
+  })
+end)
+
 -- Detect OS and configure the clipboard provider manually if needed
 -- Note: Neovim usually auto-detects these, but this forces the right tool
 local function configure_clipboard()
@@ -63,35 +90,106 @@ local function configure_clipboard()
     local is_ssh = vim.env.SSH_CONNECTION ~= nil or vim.env.SSH_CLIENT ~= nil
 
     if is_ssh then
-      -- Cache clipboard content locally so internal plugins (e.g. snacks explorer)
-      -- can write and read back from + register within the same session.
-      -- OSC 52 is still used to sync to the terminal clipboard on copy.
+      -- Copy via OSC 52 (forwarded by tmux to the outer terminal's clipboard).
+      -- Paste via `tmux save-buffer -` when inside tmux, so yanks made in one
+      -- nvim instance are visible from another nvim in a different split.
+      -- Falls back to a per-process cache + register 0 outside tmux.
+      local in_tmux = vim.env.TMUX ~= nil
       local ssh_clipboard = { ["+"] = nil, ["*"] = nil }
       local osc52_copy_plus = require("vim.ui.clipboard.osc52").copy("+")
       local osc52_copy_star = require("vim.ui.clipboard.osc52").copy("*")
+
+      -- Sidecar file shares {lines, regtype} across Neovim instances on this host,
+      -- because tmux's paste buffer alone can't carry regtype.
+      local cache_dir = vim.env.XDG_RUNTIME_DIR or vim.fn.stdpath("cache")
+      local cache_file = cache_dir .. "/nvim-clipboard.json"
+
+      local function read_file_cache()
+        local f = io.open(cache_file, "r")
+        if not f then return {} end
+        local content = f:read("*a")
+        f:close()
+        local ok, data = pcall(vim.json.decode, content)
+        return (ok and type(data) == "table") and data or {}
+      end
+
+      local function write_file_cache(reg, lines, regtype)
+        local data = read_file_cache()
+        data[reg] = { lines = lines, regtype = regtype }
+        local f = io.open(cache_file, "w")
+        if f then
+          f:write(vim.json.encode(data))
+          f:close()
+        end
+      end
+
+      local function trim_trailing_empty(lines)
+        local last = #lines
+        while last > 0 and lines[last] == "" do
+          last = last - 1
+        end
+        return last
+      end
+
+      local function lines_equal(a, b)
+        local la = trim_trailing_empty(a)
+        local lb = trim_trailing_empty(b)
+        if la ~= lb then return false end
+        for i = 1, la do
+          if a[i] ~= b[i] then return false end
+        end
+        return true
+      end
+
+      local function tmux_paste()
+        local out = vim.fn.systemlist("tmux save-buffer -")
+        if vim.v.shell_error ~= 0 then return nil end
+        return out
+      end
+
+      local function make_copy(reg, osc52_fn)
+        return function(lines, regtype)
+          ssh_clipboard[reg] = { lines, regtype }
+          write_file_cache(reg, lines, regtype)
+          osc52_fn(lines, regtype)
+        end
+      end
+
+      local function make_paste(reg)
+        return function()
+          local tmux_lines = in_tmux and tmux_paste() or nil
+
+          local cache
+          local file_entry = read_file_cache()[reg]
+          if file_entry then
+            cache = { file_entry.lines, file_entry.regtype }
+          elseif ssh_clipboard[reg] then
+            cache = ssh_clipboard[reg]
+          end
+
+          if tmux_lines and #tmux_lines > 0 then
+            -- tmux content matches our cache → reuse the cached regtype.
+            if cache and lines_equal(tmux_lines, cache[1]) then
+              return cache
+            end
+            -- Otherwise tmux holds something we didn't yank (external paste) — use it as-is.
+            return tmux_lines
+          end
+
+          if cache then return cache end
+          return vim.split(vim.fn.getreg("0"), "\n")
+        end
+      end
+
       vim.g.clipboard = {
         name = "OSC52",
         copy = {
-          ["+"] = function(lines, regtype)
-            ssh_clipboard["+"] = lines
-            osc52_copy_plus(lines, regtype)
-          end,
-          ["*"] = function(lines, regtype)
-            ssh_clipboard["*"] = lines
-            osc52_copy_star(lines, regtype)
-          end,
+          ["+"] = make_copy("+", osc52_copy_plus),
+          ["*"] = make_copy("*", osc52_copy_star),
         },
         paste = {
-          -- Return cached clipboard content if available, otherwise fall back to last yank.
-          -- Note: pasting from external programs won't work in SSH - this is the trade-off.
-          ["+"] = function()
-            if ssh_clipboard["+"] then return ssh_clipboard["+"] end
-            return vim.split(vim.fn.getreg("0"), "\n")
-          end,
-          ["*"] = function()
-            if ssh_clipboard["*"] then return ssh_clipboard["*"] end
-            return vim.split(vim.fn.getreg("0"), "\n")
-          end,
+          ["+"] = make_paste("+"),
+          ["*"] = make_paste("*"),
         },
       }
     else

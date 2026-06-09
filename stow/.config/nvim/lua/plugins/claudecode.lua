@@ -1,6 +1,5 @@
 return {
     "coder/claudecode.nvim",
-    -- "/home/rotarur/projects/claudecode.nvim",
     dependencies = { "folke/snacks.nvim" },
     config = true,
     keys = {
@@ -12,6 +11,7 @@ return {
         { "<leader>am", "<cmd>ClaudeCodeSelectModel<cr>", desc = "Select Claude model" },
         { "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add current buffer" },
         { "<leader>as", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send to Claude" },
+        { "<leader>y", "<cmd>ClaudeCodeYank<cr>", mode = "v", desc = "Copy Claude output" },
         {
             "<leader>as",
             "<cmd>ClaudeCodeTreeAdd<cr>",

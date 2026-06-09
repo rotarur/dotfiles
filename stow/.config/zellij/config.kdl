@@ -7,6 +7,19 @@ keybinds clear-defaults=true {
         bind "Ctrl g" { SwitchToMode "normal"; }
     }
     pane {
+        // Run Claude
+        bind "c" {
+            Run "claude" {
+                direction "Right"
+            }
+            Resize "Decrease left";
+            Resize "Decrease left";
+            Resize "Decrease left";
+            Resize "Decrease left";
+            Resize "Decrease left";
+            Resize "Decrease left";
+            SwitchToMode "normal";
+        }
         bind "Ctrl p" { SwitchToMode "normal"; }
         bind "e" { TogglePaneEmbedOrFloating; SwitchToMode "normal"; }
         bind "f" { ToggleFloatingPanes; SwitchToMode "normal"; }
@@ -120,6 +133,14 @@ keybinds clear-defaults=true {
         bind "esc" { UndoRenamePane; SwitchToMode "pane"; }
     }
     tmux {
+        // Show all keybindings / configuration
+        bind "?" {
+            LaunchOrFocusPlugin "configuration" {
+                floating true
+                move_to_focused_tab true
+            }
+            SwitchToMode "normal";
+        }
         bind "space" { NextSwapLayout; }
         bind "-" { NewPane "down"; SwitchToMode "normal"; }
         bind "\\" { NewPane "right"; SwitchToMode "normal"; }

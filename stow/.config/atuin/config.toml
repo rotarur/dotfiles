@@ -185,7 +185,7 @@ common_subcommands = [
 ]
 
 ## Set commands that should be totally stripped and ignored from stats
-# common_prefix = ["sudo"]
+common_prefix = ["ls"]
 
 ## Set commands that will be completely ignored from stats
 ignored_commands = [
@@ -193,7 +193,10 @@ ignored_commands = [
   "ls",
   "vi",
   "pwd",
-  "exit"
+  "exit",
+  "fg",
+  "bg",
+  "ps"
 ]
 
 [keys]

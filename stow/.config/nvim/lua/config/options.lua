@@ -13,3 +13,6 @@ opt.swapfile = false
 opt.backup = false
 opt.writebackup = false
 opt.clipboard = "unnamedplus"
+opt.wrap = true
+opt.linebreak = true
+opt.sidescrolloff = 0
