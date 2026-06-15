@@ -9,14 +9,16 @@ elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
     OS="linux-debian"
   elif command -v pacman &>/dev/null; then
     OS="linux-arch"
+  elif command -v dnf &>/dev/null; then
+    OS="linux-fedora"
   else
-    echo "Error: This script requires Debian/Ubuntu (apt), Arch Linux (pacman), or macOS"
-    echo "Detected Linux but neither apt nor pacman is available. Unsupported distribution."
+    echo "Error: This script requires Debian/Ubuntu (apt), Arch Linux (pacman), Fedora (dnf), or macOS"
+    echo "Detected Linux but none of apt, pacman, or dnf is available. Unsupported distribution."
     exit 1
   fi
 else
   echo "Unsupported OS: $OSTYPE"
-  echo "This script supports macOS, Debian/Ubuntu Linux, and Arch Linux only."
+  echo "This script supports macOS, Debian/Ubuntu Linux, Arch Linux, and Fedora only."
   exit 1
 fi
 
@@ -142,6 +144,38 @@ elif [ "$OS" == "linux-arch" ]; then
   echo "Install pip requirements"
   ${SUDO_CMD} pip3 install -r python_packages.txt
 
+elif [ "$OS" == "linux-fedora" ]; then
+  # Fedora packages
+  PACKAGES="yarnpkg moby-engine docker-compose
+       neovim the_silver_searcher gimp ansible
+       curl whois terminator zsh containerd ruby
+       python3 python3-pip gnupg2 keepassxc java-latest-openjdk
+       evince jq dconf-editor tmux fira-code-fonts
+       powerline-fonts tree atop nmap openconnect
+       NetworkManager-openconnect NetworkManager-openconnect-gnome
+       gnome-terminal kernel-devel kernel-headers fzf stow"
+
+  FEDORA_VERSION=$(rpm -E %fedora)
+
+  echo "Enabling RPM Fusion repositories"
+  ${SUDO_CMD} dnf -y install \
+    "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-${FEDORA_VERSION}.noarch.rpm" \
+    "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-${FEDORA_VERSION}.noarch.rpm"
+
+  echo "Update package metadata"
+  ${SUDO_CMD} dnf -y makecache
+
+  echo "Remove nano if installed"
+  if command -v nano &>/dev/null; then
+    ${SUDO_CMD} dnf -y remove nano
+  fi
+
+  echo "Installing packages"
+  ${SUDO_CMD} dnf -y install $PACKAGES
+
+  echo "Install pip requirements"
+  ${SUDO_CMD} pip3 install -r python_packages.txt
+
 elif [ "$OS" == "macos" ]; then
   # macOS packages using Homebrew
   if [[ ! -n "$(command -v brew)" ]]; then
@@ -176,7 +210,7 @@ echo -e "Y\n" | sh install.sh
 rm -f install.sh
 
 # Change shell to zsh on Linux
-if [[ "$OS" == "linux-debian" ]] || [[ "$OS" == "linux-arch" ]]; then
+if [[ "$OS" == "linux-debian" ]] || [[ "$OS" == "linux-arch" ]] || [[ "$OS" == "linux-fedora" ]]; then
   if [ "$SHELL" != "$ZSH" ]; then
     echo "Changing default shell to zsh"
     chsh -s $ZSH
