@@ -13,20 +13,20 @@ set $up k
 set $right l
 
 # Browser
-set $browser brave-browser
+set $browser brave-browser-stable
 
 # File manager
-set $file flatpak run io.github.sxyazi.yazi
+# set $file flatpak run io.github.sxyazi.yazi
 
 # Terminal
-set $term flatpak run org.wezfurlong.wezterm
+set $term ghostty
 bindsym $mod+Return exec $term
 
 # Menu
 set $menu wofi --show=drun --lines=10 --prompt="Search" --allow-images --allow-markup -i
 
 # Lock
-set $lock swaylock -i $HOME/Pictures/lockscreen.jpg --scaling fill -u
+set $lock swaylock -i ~/.config/sway/lockscreen.jpg --scaling fill -u
 
 # Gaps
 gaps inner 0
@@ -40,16 +40,19 @@ default_floating_border none
 #
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
 # Requires: desktop-backgrounds-compat, swaybg
-output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1136x640.png fill
+# output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1136x640.png fill
 
 output * adaptive_sync off
 
 # Monitors
+# Each workspace lists its preferred output first and falls back to the
+# laptop panel (eDP-1) when the external monitor is not connected. Sway
+# picks the first available output from the list.
 workspace 1 output eDP-1
-workspace 2 output DP-3
-workspace 3 output DP-4
-workspace 4 output DP-3
-workspace 5 output DP-4
+workspace 2 output DP-3 eDP-1
+workspace 3 output DP-4 eDP-1
+workspace 4 output DP-3 eDP-1
+workspace 5 output DP-4 eDP-1
 
 # Example configuration:
 #
@@ -67,16 +70,16 @@ exec swayidle -w \
     timeout 360 'swaymsg "output * power off"' \
     resume 'swaymsg "output * power on"' \
     timeout 600 'systemctl suspend' \
-    before-sleep 'swaylock -f -i ~/Pictures/lockscreen.jpg --scaling fill -u'
+    before-sleep 'swaylock -f -i ~/.config/sway/lockscreen.jpg --scaling fill -u'
 
 exec dunst
 # "foreign_toplevel_identifier": "4cf06db369fd00261ae7d6fe55dce33a"
 for_window [app_id="brave-browser"] move to workspace number 3
 exec brave-browser
-assign [app_id="wezterm"] workspace number 2
-exec wezterm
-assign [class="Slack"] workspace number 1
-exec sleep 3 && flatpak run com.slack.Slack
+assign [app_id="com.mitchellh.ghostty"] workspace number 2
+exec ghostty
+assign [app_id="slack"] workspace number 1
+exec sleep 3 && slack
 exec lxpolkit
 exec wl-scroll -s 2.0
 
@@ -139,9 +142,6 @@ input type:pointer {
 }
 
 ### Key bindings
-#
-# Basics:
-#
 
 # Lock
 bindsym ctrl+$mod+l exec --no-startup-id $lock
@@ -188,6 +188,7 @@ bindsym $mod+Shift+Left move left
 bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
+
 #
 # Workspaces:
 #
@@ -224,17 +225,6 @@ bindsym $mod+Shift+0 move container to workspace number 10
 # respectively.
 bindsym $mod+b splith
 bindsym $mod+v splitv
-
-# Media keys
-bindsym XF86AudioRaiseVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
-bindsym XF86AudioLowerVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
-bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
-bindsym XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
-bindsym XF86MonBrightnessUp exec brightnessctl set +5%
-bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
-
-bindsym Print exec grim ~/Pictures/screenshot-$(date +%Y%m%d-%H%M%S).png
-bindsym Shift+Print exec grim -g "$(slurp)" - | satty --filename -
 
 # Switch the current container between different layout styles
 bindsym $mod+s layout stacking
@@ -290,11 +280,6 @@ mode "resize" {
 }
 bindsym $mod+r mode "resize"
 
-# Bar
-bar {
-    swaybar_command waybar
-}
-
 primary_selection disabled
 
 xwayland enable
@@ -326,3 +311,4 @@ exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DE
 # exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway (moved earlier)
 
 include '$(/usr/libexec/sway/layered-include "/usr/share/sway/config.d/*.conf" "/etc/sway/config.d/*.conf" "${XDG_CONFIG_HOME:-${HOME}/.config}/sway/config.d/*.conf")'
+

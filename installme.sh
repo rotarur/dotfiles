@@ -67,7 +67,7 @@ if [ "$OS" == "linux-debian" ]; then
        jq dconf-editor tmux fonts-firacode fonts-powerline
        tree atop nmap openconnect network-manager-openconnect
        network-manager-openconnect-gnome gnome-terminal
-       linux-headers-generic fzf stow"
+       linux-headers-generic fzf stow grim slurp"
 
   # Set non-interactive mode to avoid debconf issues
   export DEBIAN_FRONTEND=noninteractive
@@ -153,7 +153,8 @@ elif [ "$OS" == "linux-fedora" ]; then
        evince jq dconf-editor tmux fira-code-fonts
        powerline-fonts tree atop nmap openconnect
        NetworkManager-openconnect NetworkManager-openconnect-gnome
-       gnome-terminal kernel-devel kernel-headers fzf stow"
+       gnome-terminal kernel-devel kernel-headers fzf stow grim slurp
+       wofi flatseal readline-devel ncurses-devel"
 
   FEDORA_VERSION=$(rpm -E %fedora)
 
@@ -175,6 +176,9 @@ elif [ "$OS" == "linux-fedora" ]; then
 
   echo "Install pip requirements"
   ${SUDO_CMD} pip3 install -r python_packages.txt
+
+  sudo dnf copr enable che/nerd-fonts
+  sudo dnf install nerd-fonts
 
 elif [ "$OS" == "macos" ]; then
   # macOS packages using Homebrew

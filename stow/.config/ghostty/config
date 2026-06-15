@@ -139,7 +139,7 @@ font-feature = +feat
 # On Linux with GTK, font size is scaled according to both display-wide and
 # text-specific scaling factors, which are often managed by your desktop
 # environment (e.g. the GNOME display scale and large text settings).
-font-size = 16
+font-size = 12
 
 # A repeatable configuration to set one or more font variations values for
 # a variable font. A variable font is a single font, usually with a filename
@@ -1012,7 +1012,7 @@ mouse-shift-capture = false
 # and you're likely to have a bad experience if you set either extreme.
 # 
 # The default value is "3" for discrete devices and "1" for precision devices.
-mouse-scroll-multiplier = precision:1,discrete:3
+mouse-scroll-multiplier = precision:1,discrete:0.5
 
 # The opacity level (opposite of transparency) of the background. A value of
 # 1 is fully opaque and a value of 0 is fully transparent. A value less than 0
