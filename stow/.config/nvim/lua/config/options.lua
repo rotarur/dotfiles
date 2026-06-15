@@ -13,6 +13,8 @@ opt.swapfile = false
 opt.backup = false
 opt.writebackup = false
 opt.clipboard = "unnamedplus"
+
+-- Wrap long lines instead of scrolling horizontally
 opt.wrap = true
 opt.linebreak = true
 opt.sidescrolloff = 0
