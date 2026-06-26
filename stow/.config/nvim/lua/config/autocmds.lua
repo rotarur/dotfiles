@@ -195,10 +195,18 @@ local function configure_clipboard()
     else
       -- LOCAL Linux: Fallback to Wayland or X11 logic
       if vim.env.WAYLAND_DISPLAY and vim.fn.executable("wl-copy") == 1 then
+        local function wl_paste(args)
+          return function()
+            local result = vim.fn.system("wl-paste --no-newline " .. args .. " 2>/dev/null")
+            if vim.v.shell_error ~= 0 then return {} end
+            return vim.split(result, "\n", { plain = true })
+          end
+        end
         vim.g.clipboard = {
           name = "wl-clipboard",
-          copy = { ["+"] = "wl-copy", ["*"] = "wl-copy" },
-          paste = { ["+"] = "wl-paste", ["*"] = "wl-paste" },
+          copy = { ["+"] = "wl-copy", ["*"] = "wl-copy --primary" },
+          paste = { ["+"] = wl_paste(""), ["*"] = wl_paste("--primary") },
+          cache_enabled = 0,
         }
       elseif vim.fn.executable("xsel") == 1 then
         vim.g.clipboard = {

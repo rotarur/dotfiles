@@ -21,8 +21,6 @@ end, { desc = "Find word under cursor" })
 
 -- Tabs
 keymap.set("n", "te", ":tabedit<Return>", opts)
-keymap.set("n", "<Tab>", ":BufferLineCycleNext<Return>", opts)
-keymap.set("n", "<S-Tab>", ":BufferLineCyclePrev<Return>", opts)
 
 -- Split window
 keymap.set("n", "ss", ":split<Return>", opts)
