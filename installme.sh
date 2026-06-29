@@ -204,6 +204,12 @@ elif [ "$OS" == "macos" ]; then
 
   # echo "Install pip requirements"
   # pip3 install -r python_packages.txt
+  echo "Configuring power management"
+  sudo pmset -c sleep 0
+  sudo pmset -c displaysleep 10
+  sudo pmset -a tcpkeepalive 1
+  sudo pmset -a powernap 1
+  sudo pmset -g
 fi
 
 ZSH=$(which zsh)
